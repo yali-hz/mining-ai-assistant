@@ -1,0 +1,638 @@
+app:
+  description: 面向矿业监管人员和企业人员的 AI 智能查询助手 MVP，用于 AI 产品课程作业。
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: 矿业智询
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openrouter:0.1.8@13653d0509f2422439e54f359149d5948345b8096839d38c41ceaa21e8bec7ab
+    version: null
+kind: app
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        knowledge_file_size_limit: 15
+        single_chunk_attachment_limit: 10
+        skill_file_size_limit: 50
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: question-classifier
+      id: 1789824457863-source-1789824563155-target
+      source: '1789824457863'
+      sourceHandle: source
+      target: '1789824563155'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: llm
+      id: 1789824563155-1-1789824802565-target
+      source: '1789824563155'
+      sourceHandle: '1'
+      target: '1789824802565'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: llm
+      id: 1789824563155-2-1789824891405-target
+      source: '1789824563155'
+      sourceHandle: '2'
+      target: '1789824891405'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: llm
+      id: 1789824563155-1789824613573-1789824895968-target
+      source: '1789824563155'
+      sourceHandle: '1789824613573'
+      target: '1789824895968'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: llm
+      id: 1789824563155-1789824614628-1789824901543-target
+      source: '1789824563155'
+      sourceHandle: '1789824614628'
+      target: '1789824901543'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1789824802565-source-1789824910836-target
+      source: '1789824802565'
+      sourceHandle: source
+      target: '1789824910836'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1789824891405-source-1789825634252-target
+      source: '1789824891405'
+      sourceHandle: source
+      target: '1789825634252'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1789824895968-source-1789825636616-target
+      source: '1789824895968'
+      sourceHandle: source
+      target: '1789825636616'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1789824901543-source-1789825638820-target
+      source: '1789824901543'
+      sourceHandle: source
+      target: '1789825638820'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: 输入问题
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: query
+      height: 108
+      id: '1789824457863'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        classes:
+        - id: '1'
+          label: policy_query
+          name: '【政策规则问答】
+
+
+            用户询问通用的政策规定、法定时间、截止日期、制度要求或法规依据。
+
+
+            回答此问题只需要查询政策或知识库，不需要查询某个具体企业、矿山、报告的实际业务状态。
+
+
+            典型问题：
+
+            - 储量年报什么时候提交？
+
+            - 储量年报的法定截止日期是什么？
+
+            - 哪个文件规定了储量年报的提交时间？
+
+
+            注意：
+
+            如果问题涉及“我们、某企业、某矿山”实际是否已经提交、当前状态等业务数据，不属于本分类。
+
+            如果问题需要根据业务状态进一步判断是否逾期、是否合规，也不属于本分类。'
+        - id: '2'
+          label: material_query
+          name: '【材料 / 流程问答】
+
+
+            用户询问办理某项业务、提交某项报告时需要准备哪些材料、填写哪些内容、经过什么流程。
+
+
+            回答此问题主要依赖知识库中的材料要求、办事指南或流程说明，不需要查询当前企业或矿山的实际业务状态。
+
+
+            典型问题：
+
+            - 储量年报需要准备什么？
+
+            - 提交储量年报需要哪些材料？
+
+            - 储量年报怎么报？
+
+            - 办理这个事项有哪些步骤？'
+        - id: '1789824613573'
+          label: business_status_query
+          name: '【业务状态查询】
+
+
+            用户正在查询某个具体企业、矿山或当前用户自己的真实业务数据。
+
+
+            问题重点是查询“事实状态”，例如：
+
+            - 是否已经提交
+
+            - 是否已上传
+
+            - 当前是什么状态
+
+            - 什么时间提交
+
+            - 是否审核通过
+
+            - 还缺哪些已经要求提交的业务数据
+
+
+            回答此类问题必须查询业务系统或调用 Tool / API，不能仅根据政策知识回答。
+
+
+            典型问题：
+
+            - 我们今年储量年报提交了吗？
+
+            - 我矿山的储量年报现在是什么状态？
+
+            - 青海XX公司今年的储量年报上传了吗？
+
+            - 我们是什么时候提交的？
+
+
+            只查询事实状态、不要求判断是否合法或逾期时，归入本分类。'
+        - id: '1789824614628'
+          label: compliance_judgement
+          name: '【合规 / 规则判断】
+
+
+            用户不仅查询事实，还要求系统根据政策规则、截止日期或业务规则，对当前业务状态作出判断。
+
+
+            通常需要同时获得：
+
+            1. 政策或规则信息
+
+            2. 当前企业 / 矿山的实际业务数据
+
+
+            并进行规则判断。
+
+
+            典型问题：
+
+            - 我们今年还没交，现在算逾期了吗？
+
+            - 我们现在提交还来得及吗？
+
+            - 这个矿山的材料齐全吗？
+
+            - 当前情况是否符合要求？
+
+
+            如果问题只是问“是否已提交、当前什么状态”，应归入 business_status_query。
+
+            只有需要进一步判断“逾期、合规、齐全、是否符合要求”等结果时，才进入本分类。'
+        instruction: "分类时，请按照以下优先级判断：\n\n1. 如果问题要求对当前企业/矿山状态进行合规、逾期、齐全性等判断：\n   →\
+          \ compliance_judgement\n\n2. 如果问题需要查询某个具体企业、矿山或当前用户的真实业务状态：\n   → business_status_query\n\
+          \n3. 如果问题询问需要准备哪些材料、办理步骤或流程：\n   → material_query\n\n4. 如果问题只是询问通用政策规定、法定时间或政策依据：\n\
+          \   → policy_query\n\n关键原则：\n分类依据不是问题中出现了什么业务名词，而是“回答这个问题需要什么能力”。"
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        query_variable_selector:
+        - '1789824457863'
+        - query
+        selected: false
+        title: 问题分类器
+        type: question-classifier
+        vision:
+          enabled: false
+      height: 261
+      id: '1789824563155'
+      position:
+        x: 382
+        y: 282
+      positionAbsolute:
+        x: 382
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: 42226f2c-d450-4104-84dc-e88f76139d67
+          role: system
+          text: '你正在处理【政策问答】类型的问题。
+
+
+            用户问题：
+
+            {{#1789824457863.query#}}
+
+
+            请直接回复：
+
+            已进入政策问答分支。
+
+            用户问题：{{#1789824457863.query#}}'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1789824802565'
+      position:
+        x: 683
+        y: 282
+      positionAbsolute:
+        x: 683
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: 042e77cc-5119-4788-93d1-41fd7101f083
+          role: system
+          text: '你正在处理【材料/流程问答】类型的问题。
+
+
+            用户问题：
+
+            {{#1789824457863.query#}}
+
+
+            请直接回复：
+
+            已进入材料/流程问答分支。
+
+            用户问题：/{{#1789824457863.query#}}'
+        selected: false
+        title: LLM 2
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1789824891405'
+      position:
+        x: 683
+        y: 408
+      positionAbsolute:
+        x: 683
+        y: 408
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: eacc25ab-814b-4a30-b089-d95020227d18
+          role: system
+          text: '你正在处理【业务状态查询】类型的问题。
+
+
+            用户问题：
+
+            {{#1789824457863.query#}}
+
+
+            请直接回复：
+
+            已进入业务状态查询分支。
+
+            用户问题：{{#1789824457863.query#}}
+
+            '
+        selected: false
+        title: LLM 3
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1789824895968'
+      position:
+        x: 683
+        y: 534
+      positionAbsolute:
+        x: 683
+        y: 534
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: 18d1c05f-56f9-4c54-b1b7-6072be97fff5
+          role: system
+          text: '你正在处理【综合判断】类型的问题。
+
+
+            用户问题：
+
+            {{#1789824457863.query#}}
+
+
+            请直接回复：
+
+            已进入综合判断分支。
+
+            用户问题：{{#1789824457863.query#}}'
+        selected: false
+        title: LLM 4
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1789824901543'
+      position:
+        x: 683
+        y: 660
+      positionAbsolute:
+        x: 683
+        y: 660
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1789824802565'
+          - text
+          value_type: string
+          variable: policy_answer
+        selected: false
+        title: 输出
+        type: end
+      height: 87
+      id: '1789824910836'
+      position:
+        x: 984
+        y: 282
+      positionAbsolute:
+        x: 984
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1789824891405'
+          - text
+          value_type: string
+          variable: material_answer
+        selected: false
+        title: 输出 2
+        type: end
+      height: 87
+      id: '1789825634252'
+      position:
+        x: 984
+        y: 408
+      positionAbsolute:
+        x: 984
+        y: 408
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1789824895968'
+          - text
+          value_type: string
+          variable: business_answer
+        selected: false
+        title: 输出 3
+        type: end
+      height: 87
+      id: '1789825636616'
+      position:
+        x: 984
+        y: 534
+      positionAbsolute:
+        x: 984
+        y: 534
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1789824901543'
+          - text
+          value_type: string
+          variable: compliance_answer
+        selected: true
+        title: 输出 4
+        type: end
+      height: 87
+      id: '1789825638820'
+      position:
+        x: 984
+        y: 660
+      positionAbsolute:
+        x: 984
+        y: 660
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    viewport:
+      x: -202.1981923433991
+      y: -48.136874887805504
+      zoom: 0.6597539088668166
+  rag_pipeline_variables: []
