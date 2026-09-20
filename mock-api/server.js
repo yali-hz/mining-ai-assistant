@@ -43,6 +43,7 @@ server.on('error', (error) => {
   console.error(`Mock API 启动或运行失败：${error.message}`);
   process.exitCode = 1;
 });
-server.listen(3000, '127.0.0.1', () => {
-  console.log('Mock API: http://127.0.0.1:3000/reports/status');
+const port = process.env.PORT || 3000;
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Mock API: http://0.0.0.0:${port}/reports/status`);
 });
