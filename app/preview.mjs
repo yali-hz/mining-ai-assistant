@@ -1,6 +1,10 @@
-// Local static preview only; no API, database, or Dify integration.
+// Local page server and same-origin Dify proxy; secrets stay on the server.
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { loadEnvFile } from 'node:process';
+import { handleChat } from './dify.mjs';
+try { loadEnvFile(new URL('../.env', import.meta.url)); }
+catch (error) { if (error.code !== 'ENOENT') throw error; }
 const routes = {
   '/': ['templates/index.html', 'text/html; charset=utf-8'],
   '/static/style.css': ['static/style.css', 'text/css; charset=utf-8'],
@@ -9,6 +13,10 @@ const routes = {
 };
 const port = Number(process.env.PORT || 5173);
 http.createServer(async (req, res) => {
+  if (new URL(req.url, 'http://localhost').pathname === '/api/chat') {
+    await handleChat(req, res);
+    return;
+  }
   const route = routes[new URL(req.url, 'http://localhost').pathname];
   if (!route || !['GET', 'HEAD'].includes(req.method)) {
     res.writeHead(404).end('Not found');

@@ -37,8 +37,10 @@ async function submit(question) {
   try {
     const result = await sendMessage({ question });
     reply.querySelector('.bubble').textContent = result.text;
-  } catch {
-    reply.querySelector('.bubble').textContent = '查询暂时失败，请重新发送问题。';
+  } catch (error) {
+    reply.querySelector('.bubble').textContent = error.name === 'TimeoutError'
+      ? '查询超时，请稍后重新发送问题。'
+      : (error.message === 'Failed to fetch' ? '网络连接失败，请稍后重新发送问题。' : error.message);
   } finally {
     reply.classList.remove('loading');
     pending = false;
