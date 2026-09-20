@@ -6,7 +6,10 @@ const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8
 
 const server = http.createServer((req, res) => {
   const send = (status, body) => {
-    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.writeHead(status, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': 'inline',
+    });
     res.end(JSON.stringify(body));
   };
   const url = new URL(req.url, 'http://127.0.0.1');
