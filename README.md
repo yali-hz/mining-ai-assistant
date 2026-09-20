@@ -4,7 +4,9 @@
 
 ## 当前进度
 
-当前已提供独立的 [报告状态 Mock API](mock-api/README.md)，在仓库根目录执行 `node mock-api/server.js` 即可本地运行，无需安装第三方依赖。它使用 JSON 虚构数据，不接数据库、前端或 Dify。主应用的前端、Flask 后端、数据库和大模型调用尚未实现，也尚未部署。仓库不包含真实矿山数据、真实业务接口、密码或 API Key。
+当前已完成 [移动端 H5 智能助手前端](app/README.md)：在仓库根目录执行 `node app/preview.mjs`，打开 http://localhost:5173 即可演示。包含三个可点击问题、聊天气泡、底部输入框和查询加载状态；使用独立前端 Mock 答复，尚未接入 Dify。原生 HTML/CSS/JavaScript，无需依赖安装或打包构建。
+
+另有独立的 [报告状态 Mock API](mock-api/README.md)，执行 `node mock-api/server.js` 即可本地运行。它使用 JSON 虚构数据，尚未与本次前端连接。Flask 后端、数据库和真实大模型调用尚未实现，也尚未部署。仓库不包含真实矿山数据、真实业务接口、密码或 API Key。下方保留早期架构规划，当前前端运行说明以 `app/README.md` 为准。
 
 Commit #2 新增 [MVP 架构草案](docs/architecture.md)，定义政策问答、材料问答、业务状态查询和综合判断四个 Case。本阶段仅更新文档；下文保留初始查询方案，后续范围与开发顺序以架构草案为准。
 

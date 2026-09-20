@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f7fb">
+  <title>矿业智询 · AI智能助手</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script type="module" src="/static/chat.js"></script>
+</head>
+<body>
+  <main class="phone">
+    <header class="navigation"><h1>矿业智询</h1><span class="demo">演示版</span></header>
+    <div class="content" id="content">
+      <section class="intro" aria-labelledby="assistant-title">
+        <div class="intro-heading"><span class="sparkle" aria-hidden="true">✦</span><h2 id="assistant-title">AI 矿业监管智能助手</h2></div>
+        <p>我是您的盐湖监管智能助手，可以帮助您查询矿山业务状态、政策法规及监管资料。</p>
+        <div class="capabilities"><span>业务状态</span><span>政策法规</span><span>监管资料</span></div>
+      </section>
+      <section class="suggestions" aria-labelledby="suggestion-title">
+        <h2 id="suggestion-title">您可以这样问</h2>
+        <button type="button" data-question="我们矿山的储量年报提交了吗？"><span class="question-icon" aria-hidden="true">?</span><span>我们矿山的储量年报提交了吗？</span><span class="chevron" aria-hidden="true">›</span></button>
+        <button type="button" data-question="储量年报什么时候提交？"><span class="question-icon" aria-hidden="true">?</span><span>储量年报什么时候提交？</span><span class="chevron" aria-hidden="true">›</span></button>
+        <button type="button" data-question="储量年报需要准备哪些材料？"><span class="question-icon" aria-hidden="true">?</span><span>储量年报需要准备哪些材料？</span><span class="chevron" aria-hidden="true">›</span></button>
+      </section>
+      <div class="conversation-label">有问题，随时问我</div>
+      <section id="messages" class="messages" role="log" aria-label="对话消息" aria-live="polite" aria-relevant="additions text"></section>
+    </div>
+    <footer class="composer">
+      <form id="chat-form">
+        <label class="sr-only" for="question">请输入您的问题</label>
+        <textarea id="question" rows="1" maxlength="1000" placeholder="请输入您的问题…" enterkeyhint="send"></textarea>
+        <button id="send" type="submit" aria-label="发送问题" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
+      </form>
+      <p class="disclaimer">Mock 演示 · 回答与业务状态均为虚构示例</p>
+    </footer>
+  </main>
+</body>
+</html>
