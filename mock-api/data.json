@@ -1,0 +1,15 @@
+{
+  "mock": true,
+  "description": "仅用于本地演示，企业、矿山及报告记录均为虚构数据。",
+  "enterprises": [
+    { "enterprise_id": "enterprise_001", "name": "演示矿业企业（虚构）" }
+  ],
+  "mines": [
+    { "mine_id": "mine_001", "enterprise_id": "enterprise_001", "name": "演示矿山 A（虚构）" }
+  ],
+  "reports": [
+    { "mine_id": "mine_001", "year": 2026, "report_type": "储量年报", "status": "已提交" },
+    { "mine_id": "mine_001", "year": 2026, "report_type": "年度资源开发利用报告", "status": "未提交" },
+    { "mine_id": "mine_001", "year": 2026, "report_type": "卤水动态监测年报", "status": "已提交" }
+  ]
+}
