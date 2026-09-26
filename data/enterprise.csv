@@ -1,0 +1,4 @@
+﻿enterprise_id,region_code,enterprise_name,credit_code,parent_enterprise_id,parent_enterprise_name,enterprise_type,enterprise_stage,registered_address,legal_representative,business_status,remark,updated_at
+ent_001,632801,青海盐湖示例矿业有限公司,91632801MAEXAMPLE01,grp_001,青海盐湖示例集团有限公司,国有企业,正式开采,青海省海西蒙古族藏族自治州格尔木市示例路1号,张明,存续,虚拟示例企业，用于矿业智询测试,2026-09-26T10:30:00+08:00
+ent_002,632802,海西昆仑资源开发有限公司,91632802MAEXAMPLE02,,,民营企业,正式开采,青海省海西蒙古族藏族自治州德令哈市示例大道18号,李伟,存续,虚拟示例企业，用于矿业智询测试,2026-09-26T10:30:00+08:00
+ent_003,632822,柴达木盐湖资源有限公司,91632822MAEXAMPLE03,grp_002,柴达木资源示例集团,国有企业,试生产,青海省海西蒙古族藏族自治州都兰县示例产业园6号,王强,存续,虚拟示例企业，用于矿业智询测试,2026-09-26T10:30:00+08:00
