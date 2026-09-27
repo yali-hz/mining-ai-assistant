@@ -1,0 +1,14 @@
+{
+  "name": "mining-ai-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server/app.js",
+    "dev": "node --watch server/app.js",
+    "preview": "node app/preview.mjs",
+    "test": "node --test app/dify.test.mjs server/test/*.test.js",
+    "test:business": "node --test server/test/*.test.js"
+  },
+  "dependencies": { "express": "^5.2.1" }
+}

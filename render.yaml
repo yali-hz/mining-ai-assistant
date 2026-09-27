@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: mining-business-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: node server/app.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+      - key: NODE_ENV
+        value: production
+      - key: CLOUDBASE_BASE_URL
+        sync: false
+      - key: CLOUDBASE_TOKEN
+        sync: false
+      - key: BUSINESS_API_KEY
+        generateValue: true
