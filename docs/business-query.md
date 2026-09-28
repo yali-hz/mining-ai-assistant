@@ -11,7 +11,6 @@ Node.js 22+；Express 5；只通过已有 CloudBase PostgREST GET 查询，不�
 CLOUDBASE_BASE_URL=https://YOUR_ENV_ID.api.tcloudbasegateway.com/v1/rdb/rest
 CLOUDBASE_TOKEN=填入已有PublishableKey
 BUSINESS_API_PORT=3000
-BUSINESS_API_KEY=
 ```
 
 Token 不含 `Bearer ` 前缀；Base URL 不含表名或查询参数。`.env` 已被 Git 忽略。
@@ -54,7 +53,6 @@ Token 不含 `Bearer ` 前缀；Base URL 不含表名或查询参数。`.env` �
 | HTTP | error.code | 处理 |
 | --- | --- | --- |
 | 400 | INVALID_PARAMETER / MISSING_YEAR / UNSUPPORTED_QUERY / INVALID_KEYWORD | 请用户补充或修正参数 |
-| 401 | UNAUTHORIZED | 检查业务接口密钥 |
 | 404 | ENTITY_NOT_FOUND | 说明未匹配或未配置，不能编造结论 |
 | 409 | AMBIGUOUS_ENTITY / MULTIPLE_REPORT_RECORDS | 澄清名称或核对重复数据 |
 | 422 | RESULT_TOO_LARGE | 缩小范围，当前最多 10000 条 |
@@ -73,23 +71,23 @@ npm test
 ```
 
 smoke.ps1 包含矿山面积、生产线产能、生产线数量、生产线列表、矿山报告、生产线报告六个用例。
-设置了 BUSINESS_API_KEY 时，在测试终端设置同名环境变量；脚本自动读取该环境变量（不会自动读取 .env）。
+演示接口无需 API Key；测试请求仅发送 Content-Type。
 可修改脚本中的名称、年度和报告名测试其他数据，示例值仅用于测试。
 
-自动化集成测试使用独立本地 PostgREST 模拟服务，覆盖分页、不同实体/年度、自定义报告类型、实体重名、无年度记录、重复记录、非法字段、鉴权、上游失败等；它不等于真实云端验证。
+自动化集成测试使用独立本地 PostgREST 模拟服务，覆盖分页、不同实体/年度、自定义报告类型、实体重名、无年度记录、重复记录、非法字段、无鉴权访问、上游失败等；它不等于真实云端验证。
 
 ## 部署与 Dify
 
 将业务服务部署到 Dify 能访问的 HTTPS 地址。安装命令 `npm ci`，启动命令 `npm start`。
-部署平台配置 CLOUDBASE_BASE_URL、CLOUDBASE_TOKEN、NODE_ENV=production 和独立随机 BUSINESS_API_KEY。
-如果平台提供 PORT，不设置 BUSINESS_API_PORT。生产模式缺少 BUSINESS_API_KEY 会拒绝启动。
-CloudBase Token 留在 Node 服务端，Dify 仅保存独立的业务接口密钥。现有 Publishable Key 仍受数据库 SELECT/RLS 权限约束。
+部署平台配置 CLOUDBASE_BASE_URL、CLOUDBASE_TOKEN、NODE_ENV=production。
+如果平台提供 PORT，不设置 BUSINESS_API_PORT。演示模式不要求业务接口密钥。
+CloudBase Token 留在 Node 服务端，Dify 调用业务接口无需鉴权。现有 Publishable Key 仍受数据库 SELECT/RLS 权限约束。
 
 Dify 分支：参数提取 → HTTP 请求 → 结果回答；需要安全序列化时在参数提取后加代码节点。
 
 1. 参数提取输出上述七个字段，entity_type 仅 mine / production_line；year 用 Number，不猜测缺失年度。
 2. HTTP 节点选择 POST，URL=`https://你的服务域名/api/business-query`。
-3. Headers 设置 `Content-Type: application/json` 和 `Authorization: Bearer ` 加 Dify 的 Secret 环境变量 BUSINESS_API_KEY（通过变量选择器插入）。
+3. 鉴权选择无；Headers 仅设置 `Content-Type: application/json`。
 4. 请求体传七字段 JSON。year 是数字或 null，不能是字符串或空文本。为防名称包含引号造成 JSON 损坏，可使用以下 Python 代码节点，将七个输入变量绑定为同名参数，输出 body（String）：
 
 ```python

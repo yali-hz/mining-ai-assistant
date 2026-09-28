@@ -1,10 +1,7 @@
 param(
-    [string]$BaseUrl = 'http://127.0.0.1:3000',
-    [string]$ApiKey = $env:BUSINESS_API_KEY
+    [string]$BaseUrl = 'http://127.0.0.1:3000'
 )
 $ErrorActionPreference = 'Stop'
-$headers = @{}
-if ($ApiKey) { $headers.Authorization = "Bearer $ApiKey" }
 $cases = @(
     @{entity_type='mine';entity_keyword='察尔汗一号盐湖矿山';resource_type='entity';requested_field='mine_area_km2';query_intent='attribute'},
     @{entity_type='production_line';entity_keyword='氯化钾一号生产线';resource_type='entity';requested_field='design_capacity';query_intent='attribute'},
@@ -15,7 +12,7 @@ $cases = @(
 )
 foreach ($case in $cases) {
     $json = $case | ConvertTo-Json -Compress
-    $result = Invoke-RestMethod -Uri "$($BaseUrl.TrimEnd('/'))/api/business-query" -Method Post -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ([System.Text.Encoding]::UTF8.GetBytes($json))
+    $result = Invoke-RestMethod -Uri "$($BaseUrl.TrimEnd('/'))/api/business-query" -Method Post -ContentType 'application/json; charset=utf-8' -Body ([System.Text.Encoding]::UTF8.GetBytes($json))
     if (!$result.success) { throw 'Business query failed' }
     [PSCustomObject]@{ query=$case; result=$result } | ConvertTo-Json -Depth 10 -Compress
 }

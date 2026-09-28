@@ -13,13 +13,13 @@ test('business API integration with paginated PostgREST fixture', async t => {
   };
   const upstream = fixtureServer(tables, { pageSize: 1 });
   upstream.listen(0, '127.0.0.1'); await once(upstream, 'listening');
-  const env = { CLOUDBASE_BASE_URL: `http://127.0.0.1:${upstream.address().port}/rest`, CLOUDBASE_TOKEN: 'local-test-token', BUSINESS_API_KEY: 'test-api-key' };
+  const env = { CLOUDBASE_BASE_URL: `http://127.0.0.1:${upstream.address().port}/rest`, CLOUDBASE_TOKEN: 'local-test-token', NODE_ENV: 'production' };
   const server = createApp(env).listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => { server.closeAllConnections(); server.close(); upstream.closeAllConnections(); upstream.close(); });
   const endpoint = `http://127.0.0.1:${server.address().port}/api/business-query`;
   const base = { entity_type: 'mine', entity_keyword: '测试甲矿', resource_type: 'entity', requested_field: 'mine_area_km2', query_intent: 'attribute' };
   async function post(change = {}, status = 200) {
-    const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-api-key' }, body: JSON.stringify({ ...base, ...change }) });
+    const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...base, ...change }) });
     const body = await response.json(); assert.equal(response.status, status, JSON.stringify(body)); return body;
   }
   await t.test('mine attribute and dynamic second mine', async () => { assert.equal((await post()).data.mine_area_km2, 42); assert.equal((await post({ entity_keyword: '测试乙矿' })).data.mine_area_km2, 9); });
@@ -38,6 +38,6 @@ test('business API integration with paginated PostgREST fixture', async t => {
   await t.test('field injection and wildcard rejected', async () => { await post({ requested_field: '*,manager_phone' }, 400); await post({ entity_keyword: '*' }, 400); });
   await t.test('missing backend config returns structured error', async () => { env.CLOUDBASE_TOKEN = ''; try { await post({}, 503); } finally { env.CLOUDBASE_TOKEN = 'local-test-token'; } });
   await t.test('upstream auth error does not leak credentials', async () => { env.CLOUDBASE_TOKEN = 'secret-invalid-token'; try { const result = await post({}, 502); assert.ok(!JSON.stringify(result).includes('secret-invalid-token')); } finally { env.CLOUDBASE_TOKEN = 'local-test-token'; } });
-  await t.test('API authentication', async () => { assert.equal((await fetch(endpoint, { method: 'POST' })).status, 401); });
-  await t.test('malformed JSON', async () => { const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer test-api-key' }, body: '{' }); assert.equal(r.status, 400); });
+  await t.test('demo accepts requests without authentication even with a stale key configured', async () => { env.BUSINESS_API_KEY = 'unused-legacy-key'; try { assert.equal((await post()).success, true); } finally { delete env.BUSINESS_API_KEY; } });
+  await t.test('malformed JSON', async () => { const r = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{' }); assert.equal(r.status, 400); });
 });

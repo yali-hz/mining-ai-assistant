@@ -2,25 +2,14 @@
 const express = require('express');
 const { loadEnvFile } = require('node:process');
 const path = require('node:path');
-const { timingSafeEqual } = require('node:crypto');
 const { createBusinessRouter } = require('./routes/business-query');
 
 function createApp(env = process.env, fetchImpl = fetch) {
   const app = express();
   app.disable('x-powered-by');
-  if (env.NODE_ENV === 'production' && !env.BUSINESS_API_KEY) {
-    throw new Error('Production requires BUSINESS_API_KEY');
-  }
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
   app.use('/api', (req, res, next) => {
     res.set('Cache-Control', 'no-store');
-    if (env.BUSINESS_API_KEY) {
-      const actual = Buffer.from(req.get('authorization') || '');
-      const expected = Buffer.from(`Bearer ${env.BUSINESS_API_KEY}`);
-      if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
-        return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: '接口密钥无效' } });
-      }
-    }
     next();
   });
   app.use(express.json({ limit: '16kb' }));
