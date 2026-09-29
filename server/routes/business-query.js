@@ -444,11 +444,15 @@ function createBusinessRouter(env, fetchImpl) {
           }
         }
 
+        // 真实 status 取值：submitted / overdue / late_submitted / not_submitted
         let message;
         if (!rec) {
           message = '未找到该年度记录，不能据此判定未提交';
         } else if (isOverdue === true) {
-          message = '报告已逾期';
+          // ★ 区分「逾期未交」与「逾期补交」，避免把已交的说成没交
+          message = rec.submitted_at
+            ? '报告已逾期补交（提交时间晚于截止日期）'
+            : '报告已逾期未提交';
         } else if (rec.submitted_at) {
           message = '报告已按时提交';
         } else {
