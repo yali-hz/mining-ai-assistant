@@ -33,7 +33,9 @@ test('proxy contract, validation, output branches and safe failures', async () =
     process.env.DIFY_BASE_URL = `http://127.0.0.1:${upstream.address().port}/v1/`;
     assert.equal((await request({ question: ' ' })).status, 400);
     assert.equal((await request({ question: '字'.repeat(1001) })).status, 400);
-    for (const field of ['business_answer', 'policy_answer', 'material_answer', 'compliance_answer']) {
+    const fields = ['answer', 'answer1', 'answer2', 'text', 'result', 'output',
+      'business_answer', 'policy_answer', 'material_answer', 'compliance_answer'];
+    for (const field of fields) {
       reply = { data: { status: 'succeeded', outputs: { [field]: '已提交。' } } };
       assert.deepEqual(await request({ question: '我们矿山的储量年报提交了吗？' }), { status: 200, body: { text: '已提交。' } });
     }
@@ -41,6 +43,22 @@ test('proxy contract, validation, output branches and safe failures', async () =
     assert.equal(received.auth, 'Bearer test-secret-never-return');
     assert.equal(received.body.inputs.query, '我们矿山的储量年报提交了吗？');
     assert.equal(received.body.response_mode, 'blocking');
+    for (let index = 0; index < fields.length; index++) {
+      const outputs = Object.fromEntries([...fields].reverse().map(field => [field, `回答：${field}`]));
+      for (let earlier = 0; earlier < index; earlier++) outputs[fields[earlier]] = ' \n\t ';
+      reply = { data: { status: 'succeeded', outputs } };
+      assert.deepEqual(await request({ question: '问题' }), {
+        status: 200, body: { text: `回答：${fields[index]}` },
+      });
+    }
+    for (const invalid of [null, false, 123, {}, [], '', ' \n\t ']) {
+      reply = { data: { status: 'succeeded', outputs: { answer: invalid, answer1: invalid, answer2: '有效回答' } } };
+      assert.deepEqual(await request({ question: '问题' }), { status: 200, body: { text: '有效回答' } });
+      reply = { data: { status: 'succeeded', outputs: Object.fromEntries(fields.map(field => [field, invalid])) } };
+      const empty = await request({ question: '问题' });
+      assert.equal(empty.status, 502);
+      assert.match(empty.body.error, /未返回有效回答/);
+    }
     reply = { data: { status: 'failed', error: 'test-secret-never-return' } };
     assert.equal((await request({ question: '问题' })).status, 502);
     reply = { data: { status: 'succeeded', outputs: {} } };

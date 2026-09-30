@@ -44,8 +44,9 @@ export async function handleChat(req, res) {
     const result = await upstream.json();
     if (result.data?.status !== 'succeeded') return json(res, 502, { error: 'Dify 工作流未成功完成，请检查 Dify 运行记录后重试。' });
     const outputs = result.data.outputs || {};
-    const text = ['business_answer', 'policy_answer', 'material_answer', 'compliance_answer']
-      .map(name => outputs[name]).filter(value => typeof value === 'string' && value.trim()).join('\n\n');
+    const text = ['answer', 'answer1', 'answer2', 'text', 'result', 'output',
+      'business_answer', 'policy_answer', 'material_answer', 'compliance_answer']
+      .map(name => outputs[name]).find(value => typeof value === 'string' && value.trim());
     if (!text) return json(res, 502, { error: 'Dify 未返回有效回答，请检查工作流输出字段。' });
     return json(res, 200, { text });
   } catch (error) {
