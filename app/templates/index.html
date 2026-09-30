@@ -13,23 +13,34 @@
     <header class="navigation"><h1>矿业智询</h1><span class="demo">演示版</span></header>
     <div class="content" id="content">
       <section class="intro" aria-labelledby="assistant-title">
-        <div class="intro-heading"><span class="sparkle" aria-hidden="true">✦</span><h2 id="assistant-title">AI 矿业监管智能助手</h2></div>
-        <p>我是您的盐湖监管智能助手，可以帮助您查询矿山业务状态、政策法规及监管资料。</p>
-        <div class="capabilities"><span>业务状态</span><span>政策法规</span><span>监管资料</span></div>
+        <div class="intro-heading"><span class="sparkle" aria-hidden="true">✦</span><h2 id="assistant-title">矿业知识与业务，一问即查</h2></div>
+        <p>查政策规则、材料要求与报送时间，也能查询企业、矿山和生产线信息。输入具体名称和问题，即可开始。</p>
+        <div class="capabilities"><span>知识问答</span><span>业务查询</span></div>
       </section>
       <section class="suggestions" aria-labelledby="suggestion-title">
         <h2 id="suggestion-title">您可以这样问</h2>
-        <button type="button" data-question="我们矿山的储量年报提交了吗？"><span class="question-icon" aria-hidden="true">?</span><span>我们矿山的储量年报提交了吗？</span><span class="chevron" aria-hidden="true">›</span></button>
-        <button type="button" data-question="储量年报什么时候提交？"><span class="question-icon" aria-hidden="true">?</span><span>储量年报什么时候提交？</span><span class="chevron" aria-hidden="true">›</span></button>
-        <button type="button" data-question="储量年报需要准备哪些材料？"><span class="question-icon" aria-hidden="true">?</span><span>储量年报需要准备哪些材料？</span><span class="chevron" aria-hidden="true">›</span></button>
+        <p class="suggestion-hint">点击直接提问，也可以在下方输入自己的问题。</p>
+        <div class="question-group" role="group" aria-labelledby="group-0">
+          <h3 id="group-0">知识问答<span>政策规则 · 材料要求 · 报送时间 · 术语</span></h3>
+          <button type="button" data-question="储量年报什么时候报？"><span class="question-icon" aria-hidden="true">知</span><span>储量年报什么时候报？</span><span class="chevron" aria-hidden="true">›</span></button>
+          <button type="button" data-question="排污许可需要哪些材料？"><span class="question-icon" aria-hidden="true">知</span><span>排污许可需要哪些材料？</span><span class="chevron" aria-hidden="true">›</span></button>
+        </div>
+        <div class="question-group" role="group" aria-labelledby="group-1">
+          <h3 id="group-1">业务查询<span>企业 · 矿山 · 生产线 · 报告状态</span></h3>
+          <button type="button" data-question="青海盐湖示例矿业有限公司的基本信息是什么？"><span class="question-icon" aria-hidden="true">查</span><span>青海盐湖示例矿业有限公司的基本信息是什么？</span><span class="chevron" aria-hidden="true">›</span></button>
+          <button type="button" data-question="察尔汗一号盐湖矿山面积多少？"><span class="question-icon" aria-hidden="true">查</span><span>察尔汗一号盐湖矿山面积多少？</span><span class="chevron" aria-hidden="true">›</span></button>
+          <button type="button" data-question="察尔汗一号盐湖矿山有哪些生产线？"><span class="question-icon" aria-hidden="true">查</span><span>察尔汗一号盐湖矿山有哪些生产线？</span><span class="chevron" aria-hidden="true">›</span></button>
+          <button type="button" data-question="察尔汗一号盐湖矿山2026年储量年报提交了吗？"><span class="question-icon" aria-hidden="true">查</span><span>察尔汗一号盐湖矿山2026年储量年报提交了吗？</span><span class="chevron" aria-hidden="true">›</span></button>
+        </div>
+        <p class="suggestion-hint data-hint">业务查询使用虚拟示例数据；查询其他对象时，请填写完整名称。</p>
       </section>
-      <div class="conversation-label">有问题，随时问我</div>
+      <div class="conversation-label">问规则，查信息，从这里开始</div>
       <section id="messages" class="messages" role="log" aria-label="对话消息" aria-live="polite" aria-relevant="additions text"></section>
     </div>
     <footer class="composer">
       <form id="chat-form">
         <label class="sr-only" for="question">请输入您的问题</label>
-        <textarea id="question" rows="1" maxlength="1000" placeholder="请输入您的问题…" enterkeyhint="send"></textarea>
+        <textarea id="question" rows="1" maxlength="1000" placeholder="输入规则问题或企业、矿山名称…" enterkeyhint="send"></textarea>
         <button id="send" type="submit" aria-label="发送问题" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
       </form>
       <p class="disclaimer">课程演示 · 业务数据为虚构示例，回答仅供参考</p>

@@ -22,19 +22,19 @@ Base URL 使用你的实际地址，通常以 `/v1` 结尾，不包含 `/workflo
 
 ## Dify 应用约定
 
-按仓库 `dify/mining-ai-assistant.yml` 对接 Workflow（不是 Chatflow）：
+对接已发布的 Dify V2 Workflow（不是 Chatflow），首页覆盖知识问答与业务查询：
 
 - POST `/workflows/run`，`inputs.query` 为问题，`response_mode` 为 `blocking`。
 - 必须先发布应用；每个问题独立运行，不添加多轮会话功能。
-- 读取 `data.outputs` 中非空的 `business_answer`、`policy_answer`、`material_answer`、`compliance_answer`。
+- 按顺序读取 `data.outputs` 中第一个非空字符串：`answer/answer1/answer2/text/result/output`，并兼容旧分支输出。
 - 若线上应用改了输入或输出字段，需要同步 `app/dify.mjs`。
 - 后端等待最多 120 秒，前端 125 秒；不自动重试，避免重复调用。
 - Dify 内部业务接口必须能从 Dify 服务访问。本地前端代理不能解决 Dify 内部接口的连通性问题。
 
 ## 本地验证
 
-1. 点击“我们矿山的储量年报提交了吗？”：出现用户消息和“正在查询…”，最后显示 Dify 实际回答（期望“已提交。”，取决于已发布工作流和演示数据）。
-2. 手动输入同样的问题，确认也能返回回答；再测试另外两个示例。
+1. 点击“储量年报什么时候报？”验证知识问答；点击“青海盐湖示例矿业有限公司的基本信息是什么？”验证业务查询。应出现用户消息、“正在查询…”和 Dify 实际回答。
+2. 手动输入同样的问题，确认也能返回回答；再测试其余推荐问题。
 3. 加载期间重复点击不重复发送，空白输入不发送；失败后可以重新提问。
 4. 未配置密钥时应显示配置提示；错误密钥应显示授权失败；不返回 Dify 原始错误或凭据。
 5. 浏览器网络面板只应看到 `/api/chat` 和 `{question}`，不应有 Dify API Key。
@@ -48,4 +48,4 @@ Base URL 使用你的实际地址，通常以 `/v1` 结尾，不包含 `/workflo
 - `static/assistant.mjs`：调用同源代理。
 - `static/chat.js`：现有消息展示、加载、防重复提交及错误提示。
 - `templates/index.html`：保留结构，更新演示说明。
-- `static/style.css`：未修改。
+- `static/style.css`：沿用蓝紫渐变风格，提供紧凑的能力分组和移动端适配。

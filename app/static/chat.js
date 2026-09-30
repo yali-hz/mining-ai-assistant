@@ -9,6 +9,8 @@ let pending = false;
 
 function updateInput() {
   send.disabled = pending || !input.value.trim();
+  document.querySelectorAll('[data-question]').forEach(button => { button.disabled = pending; });
+  messages.setAttribute('aria-busy', String(pending));
   input.style.height = '36px';
   input.style.height = `${Math.min(input.scrollHeight, 112)}px`;
 }
