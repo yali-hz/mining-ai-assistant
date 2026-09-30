@@ -460,8 +460,10 @@ function createBusinessRouter(env, fetchImpl) {
         }
 
         data = {
-          year: p.year,
-          report_type_name: p.report_type_name,
+          // year 取自真实记录而非入参，便于回答节点察觉「查到的年度 ≠ 用户要的年度」
+          year: rec ? rec.year : p.year,
+          report_type_name: rec ? rec.report_type_name : p.report_type_name,
+          requested_year: p.year,
           record_found: !!rec,
           status: rec?.status ?? 'unknown',
           submitted_at: rec?.submitted_at ?? null,

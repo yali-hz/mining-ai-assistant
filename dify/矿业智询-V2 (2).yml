@@ -1,0 +1,2026 @@
+app:
+  description: 面向矿业监管人员和企业人员的 AI 智能查询助手 MVP，用于 AI 产品课程作业。
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: 矿业智询-V2
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openrouter:0.1.9@8f8c69f645a62eb917ae219cfb8b567e39707941fc06c755d565ebea6cd1d88a
+    version: null
+kind: app
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        knowledge_file_size_limit: 15
+        single_chunk_attachment_limit: 10
+        skill_file_size_limit: 50
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: question-classifier
+      id: 1789824457863-source-1789824563155-target
+      selected: false
+      source: '1789824457863'
+      sourceHandle: source
+      target: '1789824563155'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: parameter-extractor
+      id: 1789824563155-1-1790524686869-target
+      selected: false
+      source: '1789824563155'
+      sourceHandle: '1'
+      target: '1790524686869'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: parameter-extractor
+        targetType: knowledge-retrieval
+      id: 1790524686869-source-1790527389651-target
+      selected: false
+      source: '1790524686869'
+      sourceHandle: source
+      target: '1790527389651'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1790527389651-source-1790529001281-target
+      selected: false
+      source: '1790527389651'
+      sourceHandle: source
+      target: '1790529001281'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: code
+      id: 1790529001281-source-1790530297069-target
+      selected: false
+      source: '1790529001281'
+      sourceHandle: source
+      target: '1790530297069'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: end
+      id: 1790530297069-source-1790529644651-target
+      selected: false
+      source: '1790530297069'
+      sourceHandle: source
+      target: '1790529644651'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: parameter-extractor
+      id: 1789824563155-2-1790533243702-target
+      selected: false
+      source: '1789824563155'
+      sourceHandle: '2'
+      target: '1790533243702'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: parameter-extractor
+        targetType: code
+      id: 1790533243702-source-1790575350520-target
+      selected: false
+      source: '1790533243702'
+      sourceHandle: source
+      target: '1790575350520'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1790580989929-true-1790533799121-target
+      selected: false
+      source: '1790580989929'
+      sourceHandle: 'true'
+      target: '1790533799121'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1790581572301-source-1790580989929-target
+      selected: false
+      source: '1790581572301'
+      sourceHandle: source
+      target: '1790580989929'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: end
+      id: 1790580989929-false-1790581829246-target
+      selected: false
+      source: '1790580989929'
+      sourceHandle: 'false'
+      target: '1790581829246'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1790533593655-source-1790581572301-target
+      selected: false
+      source: '1790533593655'
+      sourceHandle: source
+      target: '1790581572301'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: parameter-extractor
+      id: 1789824563155-1789824613573-1790586117239-target
+      selected: false
+      source: '1789824563155'
+      sourceHandle: '1789824613573'
+      target: '1790586117239'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: parameter-extractor
+        targetType: code
+      id: 1790586117239-source-17905869726870-target
+      selected: false
+      source: '1790586117239'
+      sourceHandle: source
+      target: '17905869726870'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: http-request
+      id: 17905869726870-source-1790586499483-target
+      selected: false
+      source: '17905869726870'
+      sourceHandle: source
+      target: '1790586499483'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: knowledge-retrieval
+      id: 17905869726870-source-1790586408258-target
+      selected: false
+      source: '17905869726870'
+      sourceHandle: source
+      target: '1790586408258'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1790586499483-source-17905978920750-target
+      selected: false
+      source: '1790586499483'
+      sourceHandle: source
+      target: '17905978920750'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 17905978920750-source-17905978854830-target
+      selected: false
+      source: '17905978920750'
+      sourceHandle: source
+      target: '17905978854830'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 17905978854830-true-1790586603399-target
+      selected: false
+      source: '17905978854830'
+      sourceHandle: 'true'
+      target: '1790586603399'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1790586408258-source-1790586603399-target
+      selected: false
+      source: '1790586408258'
+      sourceHandle: source
+      target: '1790586603399'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: end
+      id: 17905978854830-false-17906577553250-target
+      selected: false
+      source: '17905978854830'
+      sourceHandle: 'false'
+      target: '17906577553250'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: template-transform
+        targetType: end
+      id: 1790659938758-source-1790659942075-target
+      selected: false
+      source: '1790659938758'
+      sourceHandle: source
+      target: '1790659942075'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1790533799121-source-1790665410016-target
+      selected: false
+      source: '1790533799121'
+      sourceHandle: source
+      target: '1790665410016'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: if-else
+      id: 1790575350520-source-1790668308400-target
+      source: '1790575350520'
+      sourceHandle: source
+      target: '1790668308400'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: template-transform
+      id: 1790668308400-false-1790659938758-target
+      source: '1790668308400'
+      sourceHandle: 'false'
+      target: '1790659938758'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: if-else
+        targetType: http-request
+      id: 1790668308400-true-1790533593655-target
+      source: '1790668308400'
+      sourceHandle: 'true'
+      target: '1790533593655'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户提问
+        type: start
+        variables:
+        - default: ''
+          hint: ''
+          label: 输入问题
+          options: []
+          placeholder: ''
+          required: true
+          type: text-input
+          variable: query
+      height: 108
+      id: '1789824457863'
+      position:
+        x: 80
+        y: 282
+      positionAbsolute:
+        x: 80
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        classes:
+        - id: '1'
+          label: knowledge_query
+          name: '用户询问一般性的政策规则、业务规定、材料要求、报送要求、业务概念或状态定义。
+
+
+            核心判断标准：
+
+            回答这个问题不需要查询某个具体企业、矿山、生产线或某条实际业务记录，只需要查知识库中的通用规则即可。
+
+
+            典型问题包括：
+
+            - 储量年报什么时候报？
+
+            - 排污许可需要什么材料？
+
+            - 安全生产“三同时”包括哪些资料？
+
+            - 什么叫逾期后补交？
+
+            - 过了截止时间再补交算什么状态？
+
+            - 报告未提交和逾期有什么区别？
+
+            - 矿山合规需要检查哪些维度？
+
+
+            边界：
+
+            - 如果用户只是询问“规则是什么、某种情况一般如何定义”，属于 knowledge_query。
+
+            - 如果用户要求判断某个具体矿山、某年度、某条报告当前是否逾期或异常，则不属于本类，应归为 compliance_judgement。'
+        - id: '2'
+          label: business_query
+          name: '用户查询具体企业、矿山、生产线、报告等当前结构化业务事实。答案可以直接从业务数据库中查询得到，不需要结合政策规则进行进一步判断。
+
+
+            典型问题包括：
+
+            - 察尔汗一号盐湖矿山面积多少？
+
+            - 这个矿山有几条生产线？
+
+            - 碳酸锂一号生产线设计产能是多少？
+
+            - 察尔汗一号矿山2026年储量年报提交了吗？
+
+            - 采矿许可证有效期到什么时候？
+
+            - 当前矿山开发状态是什么？
+
+
+            边界：
+
+            - “报告提交了吗？”属于本类。
+
+            - “报告现在是否逾期？”需要结合规则判断，应归为 compliance_judgement。
+
+            - “这个矿山有哪些异常事项？”属于汇总问题，应归为 risk_query。'
+        - id: '1789824613573'
+          label: risk_query
+          name: '用户要求汇总某个企业、矿山或生产线当前存在的异常、待办、风险或需要关注的事项。通常需要查询多条业务数据并进行聚合。
+
+
+            典型问题包括：
+
+            - 察尔汗一号矿山现在有什么需要关注的问题？
+
+            - 这个矿山有哪些风险？
+
+            - 帮我看看这个矿山目前有哪些异常事项？
+
+            - 哪些年度报告还没有提交？
+
+            - 这个矿山有没有证照临期或者报告逾期？
+
+
+            边界：
+
+            - “2026年储量年报是否逾期？”只是判断一个具体事项，应归为 compliance_judgement。
+
+            - “这个矿山有哪些逾期、临期、异常事项？”属于本类。'
+        - id: '1789824614628'
+          label: compliance_judgement
+          name: '用户要求针对某一个具体业务对象或具体业务记录，结合实时业务数据和规则进行判断。
+
+
+            核心判断标准：
+
+            需要先获取具体业务事实，再结合知识规则或确定性规则得出结论。
+
+
+            典型问题包括：
+
+            - 察尔汗一号矿山2026年储量年报现在算逾期吗？
+
+            - 察尔汗一号矿山2026年储量年报是在截止日期后提交的，这条记录属于什么状态？
+
+            - 某矿山采矿权证还有20天到期，当前属于什么状态？
+
+            - 当前矿山处于停产整顿，是否属于异常状态？
+
+
+            边界：
+
+            - “逾期后补交是什么意思？”属于 knowledge_query。
+
+            - “过了截止时间再补交算什么状态？”如果只是询问一般规则，也属于 knowledge_query。
+
+            - 只有当问题涉及具体对象、具体年度、具体记录或实际当前状态，并要求做判断时，才归为 compliance_judgement。'
+        instruction: "分类时，请按照以下优先级判断：\n\n1. 如果问题要求对当前企业/矿山状态进行合规、逾期、齐全性等判断：\n   →\
+          \ compliance_judgement\n\n2. 如果问题需要查询某个具体企业、矿山或当前用户的真实业务状态：\n   → business_status_query\n\
+          \n3. 如果问题询问需要准备哪些材料、办理步骤或流程：\n   → material_query\n\n4. 如果问题只是询问通用政策规定、法定时间或政策依据：\n\
+          \   → policy_query\n\n关键原则：\n分类依据不是问题中出现了什么业务名词，而是“回答这个问题需要什么能力”。"
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: openrouter/auto
+          provider: langgenius/openrouter/openrouter
+        query_variable_selector:
+        - '1789824457863'
+        - query
+        selected: false
+        title: 问题分类器
+        type: question-classifier
+        vision:
+          enabled: false
+      height: 261
+      id: '1789824563155'
+      position:
+        x: 382
+        y: 282
+      positionAbsolute:
+        x: 382
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        instruction: '你负责将用户的知识类问题转换为适合知识库检索的结构化参数。
+
+
+          你的任务是提取检索参数，不回答用户问题。
+
+
+          【输出参数】
+
+
+          1. business_object
+
+          表示问题主要涉及的业务对象。
+
+          可取值：
+
+          - mine：矿山
+
+          - production_line：生产线
+
+          - report：年度报告、报告报送
+
+          - common：通用业务概念、跨对象规则
+
+
+          如果无法明确判断，则留空。
+
+
+          2. topic
+
+          表示问题主要涉及的知识主题。
+
+          可取值：
+
+          - annual_reporting：年度报告报送、截止时间、报送对象
+
+          - overdue：未提交、逾期、逾期后补交等状态规则
+
+          - license：采矿权证、取水许可、排污许可、安全生产许可等证照许可
+
+          - special_material：安全生产三同时、环境保护三同时、水土保持、生态修复等专项方案与准入材料
+
+          - compliance：矿山或生产线合规判断规则、资料齐全性
+
+          - terminology：业务术语、对象关系、数据口径
+
+
+          如果无法明确判断，则留空。
+
+
+          3. search_query
+
+          将用户问题改写为更适合知识库检索的规范问题。
+
+
+          要求：
+
+          - 保留用户原问题的核心含义
+
+          - 不回答问题
+
+          - 不添加用户未提供的具体业务事实
+
+          - 可将口语表达转换为规范业务术语
+
+          - 尽量补足明确的业务对象或规则主题
+
+          - 不得虚构矿山名称、年份、状态或政策内容
+
+
+          【口语表达归一化】
+
+
+          在提取参数和生成 search_query 时，应将常见口语表达转换为规范业务术语。
+
+
+          例如：
+
+          - 排污证 → 排污许可证
+
+          - 做了登记 / 登记了 → 排污登记
+
+          - 采矿证 → 采矿权证书
+
+          - 储量报告 → 储量年报
+
+          - 三同时 → 安全生产“三同时”或环境保护“三同时”，根据上下文判断
+
+          - 资料全不全 → 资料齐全性
+
+          - 行不行 / 可以吗 → 是否满足规则要求
+
+          - 晚交 / 补交 → 逾期后补交
+
+
+          【示例】
+
+
+          用户：储量报告啥时候交？
+
+          business_object = report
+
+          topic = annual_reporting
+
+          search_query = 储量年报的报送截止日期是什么时候？
+
+
+          用户：过了截止时间再补交算什么？
+
+          business_object = report
+
+          topic = overdue
+
+          search_query = 年度报告超过报送截止日期后才提交，应属于什么状态？
+
+
+          用户：没排污证做了登记行不行？
+
+          business_object = production_line
+
+          topic = license
+
+          search_query = 生产线没有排污许可证但已办理排污登记时，是否可以视为满足排污许可要求？
+
+
+          用户：矿山合规主要看什么？
+
+          business_object = mine
+
+          topic = compliance
+
+          search_query = 矿山合规状态需要从哪些维度进行判断？'
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek/deepseek-chat
+          provider: langgenius/openrouter/openrouter
+        parameters:
+        - description: 用户问题涉及的业务对象。可取：mine、production_line、report、common。如果无法明确判断则留空。
+          name: business_object
+          required: false
+          type: string
+        - description: 用户问题涉及的知识主题。可取：annual_reporting、overdue、license、special_material、compliance、terminology。如果无法明确判断则留空。
+          name: topic
+          required: false
+          type: string
+        - description: 将用户原始问题改写成适合知识库检索的规范问题，保留原意，不回答问题，不补充业务事实。
+          name: search_query
+          required: true
+          type: string
+        query:
+        - '1789824457863'
+        - query
+        reasoning_mode: prompt
+        selected: false
+        title: K-参数提取器
+        type: parameter-extractor
+        vision:
+          enabled: false
+      height: 87
+      id: '1790524686869'
+      position:
+        x: 685.0102928263548
+        y: 282
+      positionAbsolute:
+        x: 685.0102928263548
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        dataset_ids:
+        - Agf1pjnlC/HQtPY8jkv4I4P1LU+XuBpmx0d+IO09HXHSUJphDbAnGSlht2nvXXaH
+        metadata_filtering_conditions:
+          conditions: []
+          logical_operator: and
+        metadata_filtering_mode: disabled
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: weighted_score
+          top_k: 4
+          weights:
+            keyword_setting:
+              keyword_weight: 0.3
+            vector_setting:
+              embedding_model_name: openai/text-embedding-3-small
+              embedding_provider_name: langgenius/openrouter/openrouter
+              vector_weight: 0.7
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1790524686869'
+        - search_query
+        retrieval_mode: multiple
+        selected: false
+        title: K-知识检索
+        type: knowledge-retrieval
+      height: 89
+      id: '1790527389651'
+      position:
+        x: 986
+        y: 282
+      positionAbsolute:
+        x: 986
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1790527389651'
+          - result
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: qwen/qwen3.6-35b-a3b
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: 9f0acb9f-299f-42ec-a6e9-37523fbebba6
+          role: system
+          text: '你是“矿业智询”的知识问答助手。
+
+
+            你的任务是根据知识检索结果回答用户问题。
+
+
+            请严格遵守以下规则：
+
+
+            1. 只能依据提供的知识检索结果回答。
+
+            2. 不得补充知识库中没有明确提供的政策、期限、材料要求或判断标准。
+
+            3. 如果检索结果不足以支持明确回答，应说明“当前知识库暂无足够依据”。
+
+            4. 当前知识库包含的是矿业智询项目的虚拟监管规则，仅用于产品测试，不代表真实法律法规或行政监管要求。
+
+            5. 如果用户询问的是通用规则、定义、材料要求、报送时间或状态含义，应直接回答对应规则。
+
+            6. 如果检索结果中存在多个相关规则，应综合后再回答，但不得自行创造新的规则。
+
+            7. 不要把“资料缺失”直接解释为“违法”“违规”或“应处罚”，除非知识库中有明确依据。
+
+            8. 回答应简洁、明确，优先给出结论，再补充必要说明。
+
+            9. 如果问题涉及时间、条件或状态判断，应说明判断条件。
+
+            10. 不要提及“Chunk”“RAG”“召回结果”等系统内部概念。
+
+            11. 只输出最终答案，不输出思考过程、分析过程、推理步骤，也不要输出 <think> 标签。
+
+            12. 只回答与用户当前问题直接相关的内容，不主动扩展无关规则。
+
+
+            用户问题：
+
+            {{#1789824457863.query#}}
+
+
+            知识检索结果：
+
+            {{#context#}}'
+        retry_config:
+          max_retries: 3
+          retry_enabled: false
+          retry_interval: 1000
+        selected: false
+        structured_output_enabled: false
+        title: K-知识回答 LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1790529001281'
+      position:
+        x: 1288
+        y: 282
+      positionAbsolute:
+        x: 1288
+        y: 282
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1790530297069'
+          - answer
+          value_type: string
+          variable: answer1
+        selected: false
+        title: K-输出
+        type: end
+      height: 87
+      id: '1790529644651'
+      position:
+        x: 1914.9999892581552
+        y: 260.0000007271403
+      positionAbsolute:
+        x: 1914.9999892581552
+        y: 260.0000007271403
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        code: "import re\n\ndef main(text: str) -> dict:\n    if not text:\n     \
+          \   return {\"answer\": \"\"}\n\n    cleaned = re.sub(\n        r\"<think>.*?</think>\"\
+          ,\n        \"\",\n        text,\n        flags=re.DOTALL\n    ).strip()\n\
+          \n    return {\n        \"answer\": cleaned\n    }"
+        code_language: python3
+        outputs:
+          answer:
+            children: null
+            type: string
+        selected: false
+        title: K-格式清洗
+        type: code
+        variables:
+        - value_selector:
+          - '1790529001281'
+          - text
+          value_type: string
+          variable: text
+      height: 51
+      id: '1790530297069'
+      position:
+        x: 1594.9999998347407
+        y: 290.3627236143652
+      positionAbsolute:
+        x: 1594.9999998347407
+        y: 290.3627236143652
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        instruction: "你是矿业数据查询的参数提取助手，负责把用户问题解析成结构化查询参数。\n\n提取规则：\n1. entity_type：判断用户在问\"\
+          矿山\"、\"生产线\"还是\"企业\"，输出 mine / production_line / enterprise，不确定时输出 mine。\n\
+          2. entity_keyword：提取用户提到的实体名称，只保留名称核心部分，不要修饰词。\n3. query_mode（五选一）：\n  \
+          \ - 泛问整体情况（介绍一下、什么情况、概况）→ profile\n   - 问某个具体属性（矿种、面积、产能、证照有效期）→ attribute\n\
+          \   - 问\"有哪些/几条/属于哪个\" → relation\n   - 问某年某类报告有没有提交 / 什么状态（年报交了吗、逾期了吗）→\
+          \ report\n   - 问系统没有的数据（位置、储量、人数），或问风险/异常/需要关注什么 → general\n4. requested_field：attribute\
+          \ 模式填属性中文名；relation 模式填目标类型（矿山/生产线/企业）；其余模式留空。\n5. year + report_type_name：仅\
+          \ report 模式填写。year 输出 4 位数字；report_type_name 输出 储量年报 / 年度开发利用报告 / 国情调查报告\
+          \ / 卤水监测年报 之一，用户说\"年报\"按\"储量年报\"处理。\n\n重要区分：\n- \"XX报告交了吗 / 提交了吗 / 逾期了吗\"\
+          \ 是事实查询 → report，属于本分支。\n- \"有哪些风险 / 有什么需要关注的问题 / 有什么异常\" 是风险评估 → general，不属于本分支。\n\
+          \n严格约束：\n- entity_type 和 query_mode 必须输出英文枚举值，不要输出中文。\n- report_type_name\
+          \ 必须输出中文，不要输出英文。\n- 不要编造用户没提到的实体名称。\n- 不要输出任何 JSON 以外的内容。"
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek/deepseek-chat
+          provider: langgenius/openrouter/openrouter
+        parameters:
+        - description: '用户询问主体的类型，只输出英文单词，三选一：
+
+            -mine（矿山/矿区）
+
+            -production_line（生产线/产线）
+
+            -enterprise（企业/公司/集团）
+
+            判断依据：
+
+            出现"矿、矿山、矿区"→ mine；
+
+            出现"生产线、产线"→ production_line；
+
+            出现"公司、企业、集团"→ enterprise。
+
+            用户没明确说明时默认 `mine`。
+
+            禁止输出中文或这三个以外的值。
+
+            '
+          name: entity_type
+          required: true
+          type: string
+        - description: '从用户原话中提取用于数据库搜索的具体实体名称或核心关键词。
+
+            不要自行补全用户未提供的信息。例如"察尔汗一号盐湖矿山"、"氯化钾一号生产线"、"青海盐湖示例矿业"。
+
+            只输出名称本身，去掉"的""请问""帮我查"等修饰词，不加引号、不加换行。
+
+            「默认值」兜底填 `察尔汗一号盐湖矿山`（演示用）。
+
+
+            '
+          name: entity_keyword
+          required: true
+          type: string
+        - description: '配合 query_mode：
+
+            ① attribute 时填用户想查的属性，用中文（如"矿种""面积""规模""产能""开采状态""开采方式""采矿证号""证照有效期""投产日期""产品类型"）；
+
+            ② relation 时填目标实体类型，只能是"矿山"/"生产线"/"企业"之一；
+
+            ③ profile、general、report 时留空。'
+          name: requested_field
+          required: false
+          type: string
+        - description: '**仅 `query_mode=report` 时填写**。
+
+            用户提到的报告年度，输出 4 位数字，如 `2024`。"去年""今年""上一年度"按当前年份推算后输出数字。
+
+            用户没提年份时留空（清洗节点会填当前年）。
+
+            不要带"年"字以外的任何字符，不要输出"2024年度"。
+
+            '
+          name: year
+          required: false
+          type: string
+        - description: '仅 `query_mode=report` 时填写。
+
+            报告类型，输出中文标准名，四选一：`储量年报`、`年度开发利用报告`、`国情调查报告`、`卤水监测年报`。
+
+            用户说"年报"默认映射为 `储量年报`；说"开发利用报告""开发报告" → `年度开发利用报告`；说"国情调查" → `国情调查报告`；说"卤水监测""监测年报"
+            → `卤水监测年报`。
+
+            用户只说"报告""材料"没说类型时留空（清洗节点默认 `储量年报`）。
+
+            禁止输出 `annual` 或任何英文。
+
+            '
+          name: report_type_name
+          required: false
+          type: string
+        - description: '查询模式，五选一，只输出英文单词。
+
+            -profile：泛问整体情况（"介绍一下""什么情况""概况""有哪些信息"）；
+
+            -attribute：问某一个具体属性（"矿种""面积""规模""产能""开采状态""开采方式""采矿证号""证照有效期"）；
+
+            -relation：问归属或列表（"有哪些/几条生产线""属于哪个企业""属于哪个矿山""这个企业有哪些矿山"）；
+
+            -report：问某一年的某类报告有没有提交/什么状态（"储量年报交了吗""2024年开发利用报告提交了没""年报逾期了吗"）；
+
+            -general：问系统没有的数据（"位置在哪""储量多少""员工人数"）。
+
+            注意：问"有哪些风险""有什么需要关注的"不属于以上任何一种，那是风险评估，请输出 `general`。
+
+            提取器「默认值」填 `profile`。
+
+
+            '
+          name: query_mode
+          required: true
+          type: string
+        query:
+        - '1789824457863'
+        - query
+        reasoning_mode: prompt
+        selected: false
+        title: 'B-参数提取器 '
+        type: parameter-extractor
+        vision:
+          enabled: false
+      height: 87
+      id: '1790533243702'
+      position:
+        x: 685.0102928263548
+        y: 409
+      positionAbsolute:
+        x: 685.0102928263548
+        y: 409
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-97
+            key: ''
+            type: text
+            value: '{{#1790575350520.json_body#}}'
+          type: raw-text
+        error_strategy: fail-branch
+        headers: Content-Type:application/json
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 5000
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: B-统一API
+        type: http-request
+        url: https://mining-business-api.onrender.com/api/business-query
+        variables: []
+      height: 188
+      id: '1790533593655'
+      position:
+        x: 1530.1472445835434
+        y: 399.6806219064955
+      positionAbsolute:
+        x: 1530.1472445835434
+        y: 399.6806219064955
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: qwen/qwen3.6-35b-a3b
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - edition_type: basic
+          id: 2e3e9c6d-8eea-4fa3-a345-a0c06f46cf5a
+          role: system
+          text: "你是矿山数据助手，根据系统查询结果回答用户问题。\n\n- 查询模式：{{#1790575350520.mode#}}\n- 查询结果：{{#1790533593655.body#}}\n\
+            \n回答要求：\n1. 只能使用查询结果 JSON 里实际存在的字段值。结果里没有的信息一律不提。\n2. 严禁出现 XXXX、XX年XX月、示例占位符或任何编造的数字、日期、编号。宁可少说，不可编造。\n\
+            3. 禁止用你自己的知识补充任何背景信息（例如真实世界中察尔汗盐湖的面积、矿种、历史）。你不是百科，你只转述查询结果。\n4. mode=attribute：只回答被问的那一个属性，一两句话说完，不扩展、不介绍其他方面。\n\
+            5. mode=profile：挑结果里已有的重点介绍（名称/规模/产能/开采状态/矿种），不逐字段念，结果里没有的字段不要提。\n6. mode=relation：列出\
+            \ items 里的名称即可，count 是多少就说多少。\n7. mode=report：按 data.message 判定，不要自己从\
+            \ status 英文值推断——\n   \"报告已按时提交\" → 已按时提交，可补充提交时间；\n   \"报告已逾期未提交\" → 已过截止日且未提交，指出\
+            \ due_date；\n   \"报告已逾期补交（提交时间晚于截止日期）\" → 必须说清\"已经交了，但晚于截止日期\"；\n   \"\
+            报告尚未提交，仍在有效期内\" → 还没交，截止日是 due_date；\n   \"未找到该年度记录，不能据此判定未提交\" → 只能说系统中没有该年度该类型报告的记录，\n\
+            \   严禁说成未提交或已逾期。\n8. 单位规范仅在对应字段确实存在时使用：面积 km²、产能\"万吨/年\"。\n9. 不透露字段名、JSON、接口、状态码等技术细节。\n"
+        selected: false
+        title: B-业务回答 LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1790533799121'
+      position:
+        x: 2400.758166244151
+        y: 353.0467009280373
+      positionAbsolute:
+        x: 2400.758166244151
+        y: 353.0467009280373
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        code: "function main({ entity_type, entity_keyword, requested_field, query_mode,\
+          \ year, report_type_name }) {\n  const clean = (val) => (val == null ? \"\
+          \" : String(val)\n    .replace(/[{}]/g, \"\")\n    .replace(/\\r\\n|\\r|\\\
+          n/g, \" \")\n    .replace(/\\s+/g, \" \")\n    .trim());\n\n  // ★ v5.1：本文件不出现感叹号字符，避免粘贴时被转义成反斜杠+感叹号报\
+          \ SyntaxError\n  const VALID_ENTITY = [\"mine\", \"production_line\", \"\
+          enterprise\"];\n  let et = clean(entity_type).toLowerCase();\n  if (VALID_ENTITY.indexOf(et)\
+          \ < 0) et = \"mine\";\n  // 关键词去空白：避免 LLM 输出换行/空格导致 ilike 模糊匹配落空\n  const\
+          \ kw = clean(entity_keyword).replace(/\\s+/g, \"\").slice(0, 200);\n\n \
+          \ const VALID_MODE = [\"profile\", \"attribute\", \"relation\", \"report\"\
+          , \"general\"];\n  let mode = clean(query_mode).toLowerCase();\n  if (VALID_MODE.indexOf(mode)\
+          \ < 0) mode = \"profile\";\n\n  // ★ profile：一次拿全档案，不带 requested_field\n\
+          \  if (mode === \"profile\") {\n    return {\n      mode: \"profile\", skip_api:\
+          \ false,\n      json_body: JSON.stringify({\n        entity_type: et, entity_keyword:\
+          \ kw,\n        resource_type: \"entity\", query_intent: \"profile\"\n  \
+          \    })\n    };\n  }\n\n  // —— report：报告提交事实查询（v5 归 06-B）——\n  // 生成 resource_type=report\
+          \ + query_intent=status + 中文报告类型 + 整数年份\n  if (mode === \"report\") {\n\
+          \    const RT = {\n      \"储量年报\": \"储量年报\", \"年报\": \"储量年报\", \"储量报告\"\
+          : \"储量年报\", \"储量\": \"储量年报\",\n      \"年度开发利用报告\": \"年度开发利用报告\", \"开发利用报告\"\
+          : \"年度开发利用报告\",\n      \"开发报告\": \"年度开发利用报告\", \"利用报告\": \"年度开发利用报告\",\n\
+          \      \"国情调查报告\": \"国情调查报告\", \"国情调查\": \"国情调查报告\", \"国情报告\": \"国情调查报告\"\
+          ,\n      \"卤水监测年报\": \"卤水监测年报\", \"卤水监测\": \"卤水监测年报\",\n      \"监测年报\":\
+          \ \"卤水监测年报\", \"监测报告\": \"卤水监测年报\",\n      // 兼容英文/错填，避免 LLM 输出 annual 导致查不到\n\
+          \      \"annual\": \"储量年报\", \"report\": \"储量年报\"\n    };\n    const rawR\
+          \ = clean(report_type_name);\n    const rtn = RT[rawR] || RT[rawR.toLowerCase()]\
+          \ || \"储量年报\";\n\n    // year：从 \"2024\" / \"2024年\" / \"2024年度\" / \"2024-01-01\"\
+          \ 里抠 4 位数字\n    // ★ 缺省取「最新可查年度」而非当前年：数据年度为 2023/2024/2025，\n    //   当前年已是\
+          \ 2026，用 new Date().getFullYear() 会必然查不到（BC-008 连带问题）\n    const LATEST_YEAR\
+          \ = 2025;\n    const ym = clean(year).match(/(\\d{4})/);\n    const yr =\
+          \ ym ? Number(ym[1]) : LATEST_YEAR;\n\n    return {\n      mode: \"report\"\
+          , skip_api: false,\n      json_body: JSON.stringify({\n        entity_type:\
+          \ et, entity_keyword: kw,\n        resource_type: \"report\", query_intent:\
+          \ \"status\",\n        requested_field: \"status\",\n        year: yr,\n\
+          \        report_type_name: rtn\n      })\n    };\n  }\n\n  // —— relation：双向关系查询（v3）——\n\
+          \  // requested_field 承载\"目标实体类型\"；统一用 list（响应自带 count，问\"几条\"也能答）\n  if\
+          \ (mode === \"relation\") {\n    const TARGET = {\n      \"生产线\": \"production_line\"\
+          , \"产线\": \"production_line\", \"几条生产线\": \"production_line\", \"production_line\"\
+          : \"production_line\",\n      \"矿山\": \"mine\", \"矿\": \"mine\", \"哪个矿山\"\
+          : \"mine\", \"mine\": \"mine\",\n      \"企业\": \"enterprise\", \"公司\": \"\
+          enterprise\", \"哪个企业\": \"enterprise\", \"所属企业\": \"enterprise\", \"enterprise\"\
+          : \"enterprise\"\n    };\n    const rawT = clean(requested_field);\n   \
+          \ const tgt = TARGET[rawT] || TARGET[rawT.toLowerCase()] || \"\";\n    if\
+          \ (tgt === \"\") {\n      return { mode: \"general\", skip_api: true, json_body:\
+          \ \"\" };\n    }\n    return {\n      mode: \"relation\", skip_api: false,\n\
+          \      json_body: JSON.stringify({\n        entity_type: et, entity_keyword:\
+          \ kw,\n        resource_type: \"relation\", target_type: tgt, query_intent:\
+          \ \"list\"\n      })\n    };\n  }\n\n  // —— attribute：中文属性词 → 白名单字段（15\
+          \ 个）——\n  if (mode === \"attribute\") {\n    const MAP_MINE = {\n      \"\
+          名称\":\"mine_name\",\"矿名\":\"mine_name\",\"mine_name\":\"mine_name\",\n \
+          \     \"面积\":\"mine_area_km2\",\"mine_area_km2\":\"mine_area_km2\",\n  \
+          \    \"规模\":\"mine_scale\",\"mine_scale\":\"mine_scale\",\n      \"产能\"\
+          :\"production_scale\",\"生产规模\":\"production_scale\",\"production_scale\"\
+          :\"production_scale\",\n      \"开采状态\":\"development_status\",\"开发状态\":\"\
+          development_status\",\"在开采吗\":\"development_status\",\"development_status\"\
+          :\"development_status\",\n      \"开采方式\":\"mining_methods\",\"采矿方式\":\"\
+          mining_methods\",\"mining_methods\":\"mining_methods\",\n      \"矿种\":\"\
+          mineral_types\",\"矿产\":\"mineral_types\",\"mineral_types\":\"mineral_types\"\
+          ,\n      \"采矿证号\":\"mining_license_no\",\"证号\":\"mining_license_no\",\"\
+          许可证号\":\"mining_license_no\",\"mining_license_no\":\"mining_license_no\"\
+          ,\n      \"证照编号\":\"mining_license_no\",\"采矿证\":\"mining_license_no\",\"\
+          采矿许可证\":\"mining_license_no\",\n      \"生效日期\":\"valid_from\",\"生效\":\"\
+          valid_from\",\"valid_from\":\"valid_from\",\n      \"有效期\":\"valid_to\"\
+          ,\"到期日\":\"valid_to\",\"截止日期\":\"valid_to\",\"valid_to\":\"valid_to\",\n\
+          \      \"证照有效期\":\"valid_to\",\"采矿证有效期\":\"valid_to\",\"许可证有效期\":\"valid_to\"\
+          ,\n      \"证照到期\":\"valid_to\",\"证照截止\":\"valid_to\",\"到期\":\"valid_to\"\
+          ,\n      \"矿山地址\":\"mine_address\",\"mine_address\":\"mine_address\",\n\
+          \      \"绿色矿山级别\":\"green_mine_level\",\"绿色矿山\":\"green_mine_level\",\"\
+          green_mine_level\":\"green_mine_level\",\n      \"发证机关级别\":\"issuing_level\"\
+          ,\"发证级别\":\"issuing_level\",\"issuing_level\":\"issuing_level\",\n     \
+          \ \"运营企业\":\"operator_enterprise_name\",\"运营主体\":\"operator_enterprise_name\"\
+          ,\"operator_enterprise_name\":\"operator_enterprise_name\",\n      \"矿业权人\"\
+          :\"mining_right_holder_name\",\"采矿权人\":\"mining_right_holder_name\",\"mining_right_holder_name\"\
+          :\"mining_right_holder_name\"\n    };\n    const MAP_LINE = {\n      \"\
+          名称\":\"production_line_name\",\"名称是什么\":\"production_line_name\",\"production_line_name\"\
+          :\"production_line_name\",\n      \"设计产能\":\"design_capacity\",\"产能\":\"\
+          design_capacity\",\"design_capacity\":\"design_capacity\",\n      \"工艺\"\
+          :\"production_process\",\"生产工艺\":\"production_process\",\"production_process\"\
+          :\"production_process\",\n      \"产品\":\"product_types\",\"产品类型\":\"product_types\"\
+          ,\"product_types\":\"product_types\",\n      \"投产日期\":\"production_start_date\"\
+          ,\"投产时间\":\"production_start_date\",\"production_start_date\":\"production_start_date\"\
+          ,\n      \"停产日期\":\"production_end_date\",\"production_end_date\":\"production_end_date\"\
+          \n    };\n    const MAP_ENT = {\n      \"名称\":\"enterprise_name\",\"企业名称\"\
+          :\"enterprise_name\",\"enterprise_name\":\"enterprise_name\",\n      \"\
+          统一社会信用代码\":\"credit_code\",\"信用代码\":\"credit_code\",\"credit_code\":\"credit_code\"\
+          ,\n      \"企业类型\":\"enterprise_type\",\"企业性质\":\"enterprise_type\",\"enterprise_type\"\
+          :\"enterprise_type\",\n      \"企业阶段\":\"enterprise_stage\",\"enterprise_stage\"\
+          :\"enterprise_stage\",\n      \"经营状态\":\"business_status\",\"经营状况\":\"business_status\"\
+          ,\"business_status\":\"business_status\",\n      \"法人\":\"legal_representative\"\
+          ,\"法定代表人\":\"legal_representative\",\"法人代表\":\"legal_representative\",\"\
+          legal_representative\":\"legal_representative\",\n      \"注册地址\":\"registered_address\"\
+          ,\"注册地\":\"registered_address\",\"registered_address\":\"registered_address\"\
+          ,\n      \"上级企业\":\"parent_enterprise_name\",\"母公司\":\"parent_enterprise_name\"\
+          ,\"parent_enterprise_name\":\"parent_enterprise_name\",\n      \"行政区划\"\
+          :\"region_code\",\"区划代码\":\"region_code\",\"region_code\":\"region_code\"\
+          \n    };\n\n    const raw = clean(requested_field);\n    const map = et\
+          \ === \"mine\" ? MAP_MINE : (et === \"production_line\" ? MAP_LINE : MAP_ENT);\n\
+          \    let rf = map[raw] || map[raw.toLowerCase()] || (map[raw] === undefined\
+          \ && Object.prototype.hasOwnProperty.call(map, raw) ? map[raw] : \"\");\n\
+          \n    // ★ v5.2：精确匹配不到时，按关键词包含匹配兜底\n    //   例如\"证照有效期\"不在映射表里，但包含\"有效期\"\
+          \ → valid_to\n    if (rf === \"\") {\n      const CONTAINS = [\n       \
+          \ [\"有效期\", \"valid_to\"], [\"到期\", \"valid_to\"], [\"截止\", \"valid_to\"\
+          ],\n        [\"证号\", \"mining_license_no\"], [\"许可证\", \"mining_license_no\"\
+          ], [\"采矿证\", \"mining_license_no\"],\n        [\"生效\", \"valid_from\"],\n\
+          \        [\"矿种\", \"mineral_types\"], [\"矿产\", \"mineral_types\"],\n   \
+          \     [\"面积\", \"mine_area_km2\"],\n        [\"产能\", \"production_scale\"\
+          ], [\"规模\", \"production_scale\"],\n        [\"开采状态\", \"development_status\"\
+          ], [\"开发状态\", \"development_status\"],\n        [\"开采方式\", \"mining_methods\"\
+          ], [\"采矿方式\", \"mining_methods\"]\n      ];\n      for (let i = 0; i < CONTAINS.length;\
+          \ i++) {\n        // 第二个条件确保兜底字段确实在当前实体白名单里（生产线没有 valid_to 就不会误匹配）\n   \
+          \     if (raw.indexOf(CONTAINS[i][0]) >= 0 && Object.prototype.hasOwnProperty.call(map,\
+          \ CONTAINS[i][1])) {\n          rf = CONTAINS[i][1];\n          break;\n\
+          \        }\n      }\n    }\n\n    if (rf === \"\") {\n      // 字段不在白名单 →\
+          \ 降级，绝不硬发（避免 400 属性字段不支持）\n      return { mode: \"general\", skip_api: true,\
+          \ json_body: \"\" };\n    }\n    return {\n      mode: \"attribute\", skip_api:\
+          \ false,\n      json_body: JSON.stringify({\n        entity_type: et, entity_keyword:\
+          \ kw,\n        resource_type: \"entity\", requested_field: rf, query_intent:\
+          \ \"attribute\"\n      })\n    };\n  }\n\n  return { mode: \"general\",\
+          \ skip_api: true, json_body: \"\" };\n}\n"
+        code_language: javascript
+        outputs:
+          json_body:
+            children: null
+            type: string
+          mode:
+            children: null
+            type: string
+          skip_api:
+            children: null
+            type: boolean
+        selected: false
+        title: B-格式清洗
+        type: code
+        variables:
+        - value_selector:
+          - '1790533243702'
+          - entity_type
+          value_type: string
+          variable: entity_type
+        - value_selector:
+          - '1790533243702'
+          - entity_keyword
+          value_type: string
+          variable: entity_keyword
+        - value_selector:
+          - '1790533243702'
+          - requested_field
+          value_type: string
+          variable: requested_field
+        - value_selector:
+          - '1790533243702'
+          - year
+          value_type: string
+          variable: year
+        - value_selector:
+          - '1790533243702'
+          - report_type_name
+          value_type: string
+          variable: report_type_name
+        - value_selector:
+          - '1790533243702'
+          - query_mode
+          value_type: string
+          variable: query_mode
+      height: 51
+      id: '1790575350520'
+      position:
+        x: 986
+        y: 425.8249643445681
+      positionAbsolute:
+        x: 986
+        y: 425.8249643445681
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 9aab583b-4e8d-4600-b1db-13eb83a1e0f1
+            numberVarType: constant
+            value: true
+            varType: boolean
+            variable_selector:
+            - '1790581572301'
+            - is_ok
+          logical_operator: and
+        selected: false
+        title: B-条件分支
+        type: if-else
+      height: 123
+      id: '1790580989929'
+      position:
+        x: 2093.1006772318055
+        y: 433.099903840192
+      positionAbsolute:
+        x: 2093.1006772318055
+        y: 433.099903840192
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        code: "function main({ status_code, body }) {\n  const code = Number(status_code);\n\
+          \  let err_code = \"\";\n  let err_msg = \"\";\n  try {\n    const b = JSON.parse(body);\n\
+          \    if (b && b.error) {\n      err_code = b.error.code || \"\";\n     \
+          \ err_msg = b.error.message || \"\";\n    }\n  } catch (e) {}\n\n  const\
+          \ is_ok = code === 200;\n  if (is_ok) return { is_ok, err_code: \"\", err_msg:\
+          \ \"\", friendly_msg: \"\", guidance: \"\", reply: \"\" };\n\n  const ENTITIES\
+          \ = \"现有数据包括：察尔汗一号盐湖矿山、察尔汗二号盐湖矿山、东台盐湖矿山、西台盐湖矿山、大柴旦北部盐湖矿山、都兰南部盐湖矿山；氯化钾一号\
+          \ / 二号生产线、碳酸锂示范生产线、氯化镁生产线等；青海盐湖示例矿业有限公司、海西昆仑资源开发有限公司、柴达木盐湖资源有限公司。\";\n \
+          \ const ABILITY = \"我可以帮你查：矿山 / 企业 / 生产线的基础信息（矿种、面积、规模、产能、开采状态、证照有效期）、它们之间的归属关系，以及某年度某类报告是否已提交。\"\
+          ;\n  const RELATION = \"目前可查的关系有：企业有哪些矿山 / 生产线、矿山有哪些生产线、矿山属于哪个企业、生产线属于哪个矿山或企业。\"\
+          ;\n\n  let friendly_msg, guidance;\n\n  if (err_code === \"ENTITY_NOT_FOUND\"\
+          ) {\n    friendly_msg = \"没有找到你说的这个矿山 / 生产线 / 企业，可能是名称不完整或字序有出入。\";\n  \
+          \  guidance = ENTITIES;\n\n  } else if (err_code === \"MISSING_YEAR\") {\n\
+          \    friendly_msg = \"我没听清是哪一年的报告。\";\n    guidance = \"请补上年份再问，例如「察尔汗一号盐湖矿山\
+          \ 2024 年储量年报提交了吗」。可查年份为 2024 / 2025 / 2026，报告类型有储量年报、年度开发利用报告、国情调查报告、卤水监测年报。\"\
+          ;\n\n  } else if (err_code === \"INVALID_PARAMETER\") {\n    friendly_msg\
+          \ = \"这条查询缺少必要信息，比如没说清是哪个矿山或生产线。\";\n    guidance = \"请带上具体的实体名称再问一次。\"\
+          ;\n\n  } else if (err_code === \"UNSUPPORTED_QUERY\") {\n    if (/属性字段不支持/.test(err_msg))\
+          \ {\n      friendly_msg = \"这个信息项暂时不在可查范围内。\";\n      guidance = ABILITY;\n\
+          \    } else if (/不支持该实体关系|关系查询仅支持/.test(err_msg)) {\n      friendly_msg\
+          \ = \"这种关联关系暂时查不了。\";\n      guidance = RELATION;\n    } else if (/报告查询仅支持/.test(err_msg))\
+          \ {\n      friendly_msg = \"报告查询的条件不完整。\";\n      guidance = \"请按「某实体 +\
+          \ 某年份 + 某类报告」的方式提问，例如「察尔汗一号盐湖矿山 2025 年储量年报提交了吗」。\";\n    } else {\n    \
+          \  friendly_msg = \"这类查询暂不支持。\";\n      guidance = ABILITY;\n    }\n\n \
+          \ } else if (err_code === \"CLOUDBASE_ERROR\" || err_code === \"CLOUDBASE_NOT_CONFIGURED\"\
+          \ || code >= 500) {\n    friendly_msg = \"数据服务暂时不可用。\";\n    guidance =\
+          \ \"请稍后重试；如果持续失败，请联系系统管理员。\";\n\n  } else if (code === 404 || code === 400)\
+          \ {\n    friendly_msg = \"这个查询没能成功执行。\";\n    guidance = ABILITY;\n\n  }\
+          \ else {\n    friendly_msg = \"查询失败，请稍后重试。\";\n    guidance = ABILITY;\n\
+          \  }\n\n  return {\n    is_ok,\n    err_code,\n    err_msg,\n    friendly_msg,\n\
+          \    guidance,\n    reply: friendly_msg + \"\\n\\n\" + guidance\n  };\n\
+          }\n"
+        code_language: javascript
+        outputs:
+          err_code:
+            children: null
+            type: string
+          err_msg:
+            children: null
+            type: string
+          friendly_msg:
+            children: null
+            type: string
+          guidance:
+            children: null
+            type: string
+          is_ok:
+            children: null
+            type: boolean
+          reply:
+            children: null
+            type: string
+        selected: false
+        title: B-报错解析
+        type: code
+        variables:
+        - value_selector:
+          - '1790533593655'
+          - status_code
+          value_type: number
+          variable: status_code
+        - value_selector:
+          - '1790533593655'
+          - body
+          value_type: string
+          variable: body
+      height: 51
+      id: '1790581572301'
+      position:
+        x: 1815.8488709064509
+        y: 471.7234014505516
+      positionAbsolute:
+        x: 1815.8488709064509
+        y: 471.7234014505516
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1790581572301'
+          - reply
+          value_type: string
+          variable: direct_answer
+        selected: false
+        title: B-友好报错
+        type: end
+      height: 87
+      id: '1790581829246'
+      position:
+        x: 2400.758166244151
+        y: 558.3085121422206
+      positionAbsolute:
+        x: 2400.758166244151
+        y: 558.3085121422206
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        instruction: '你负责把用户的矿业业务查询转换为统一业务查询 API 所需的结构化参数以及提供给知识检索的结构化参数。
+
+
+          任务：从用户问题中提取风险判断所需的结构化参数。
+
+
+          请遵守以下规则：
+
+          1. 只提取用户问题中明确表达或可直接判断的信息，不要臆造对象名称。
+
+          2. entity_type 只允许输出：mine、production_line、enterprise、unknown。
+
+          3. risk_focus 只允许输出：report、license、compliance、overall。
+
+          4. api_query_intent 固定输出 risk。
+
+          5. search_query 要改写成更适合知识库检索的表达，保留核心业务对象、业务事项、风险判断语义。
+
+          6. 如果未识别到明确对象名称，entity_keyword 返回 unknown。
+
+          7. 如果未提及年份，year 返回空字符串。
+
+
+          示例1：
+
+          用户：察尔汗一号盐湖矿山今年有没有合规风险？
+
+          输出：
+
+          - entity_type = mine
+
+          - entity_keyword = 察尔汗一号盐湖矿山
+
+          - year = ""
+
+          - risk_focus = compliance
+
+          - search_query = 察尔汗一号盐湖矿山合规风险判断规则
+
+          - api_query_intent = risk
+
+
+          示例2：
+
+          用户：过了截止时间再补交算什么？
+
+          输出：
+
+          - entity_type = unknown
+
+          - entity_keyword = unknown
+
+          - year = ""
+
+          - risk_focus = report
+
+          - search_query = 年度报告逾期后补交状态判定规则
+
+          - api_query_intent = risk
+
+
+          示例3：
+
+          用户：没排污证做了登记行不行？
+
+          输出：
+
+          - entity_type = production_line
+
+          - entity_keyword = unknown
+
+          - year = ""
+
+          - risk_focus = license
+
+          - search_query = 排污许可二选一规则 排污许可证 排污登记表及回执
+
+          - api_query_intent = risk'
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek/deepseek-chat
+          provider: langgenius/openrouter/openrouter
+        parameters:
+        - description: '识别用户问题关注的业务对象类型。可选值：
+
+            - mine：矿山
+
+            - production_line：生产线
+
+            - enterprise：企业
+
+            - unknown：无法判断'
+          name: entity_type
+          required: true
+          type: string
+        - description: '提取用户问题中的业务对象名称，例如矿山名称、生产线名称、企业名称。
+
+            如果未出现明确对象名称，则返回 unknown。'
+          name: entity_keyword
+          required: true
+          type: string
+        - description: '提取问题涉及的年份，如 2024、2025、2026。
+
+            如未提及年份，返回空字符串。'
+          name: year
+          required: false
+          type: string
+        - description: '识别用户关注的是哪类风险。可选值：
+
+            - report：报告报送/逾期/补报风险
+
+            - license：证照齐全性/到期/缺失风险
+
+            - compliance：合规状态判断
+
+            - overall：整体风险或未明确具体类别'
+          name: risk_focus
+          required: true
+          type: string
+        - description: '将用户原始问题改写成适合知识库检索的标准问题。
+
+            要求保留核心业务对象、事项名称和风险判断语义。'
+          name: search_query
+          required: true
+          type: string
+        query:
+        - '1789824457863'
+        - query
+        reasoning_mode: prompt
+        selected: false
+        title: 'R-参数提取器 '
+        type: parameter-extractor
+        vision:
+          enabled: false
+      height: 87
+      id: '1790586117239'
+      position:
+        x: 685.0102928263548
+        y: 534
+      positionAbsolute:
+        x: 685.0102928263548
+        y: 534
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        dataset_ids:
+        - Agf1pjnlC/HQtPY8jkv4I4P1LU+XuBpmx0d+IO09HXHSUJphDbAnGSlht2nvXXaH
+        metadata_filtering_mode: disabled
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: cohere/rerank-4-fast
+            provider: langgenius/openrouter/openrouter
+          score_threshold: 0.5
+          top_k: 4
+          weights:
+            keyword_setting:
+              keyword_weight: 0.3
+            vector_setting:
+              embedding_model_name: openai/text-embedding-3-small
+              embedding_provider_name: langgenius/openrouter/openrouter
+              vector_weight: 0.7
+            weight_type: customized
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1790586117239'
+        - search_query
+        retrieval_mode: multiple
+        selected: false
+        title: 'R-知识检索 '
+        type: knowledge-retrieval
+      height: 89
+      id: '1790586408258'
+      position:
+        x: 1280.6092832354211
+        y: 760.6394211327276
+      positionAbsolute:
+        x: 1280.6092832354211
+        y: 760.6394211327276
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-10
+            key: ''
+            type: text
+            value: '{{#17905869726870.result#}}'
+          type: raw-text
+        default_value:
+        - key: body
+          type: string
+          value: ''
+        - key: status_code
+          type: number
+          value: 0
+        - key: headers
+          type: object
+          value: '{}'
+        error_strategy: default-value
+        headers: Content-Type:application/json
+        method: post
+        params: ''
+        retry_config:
+          max_retries: 1
+          retry_enabled: false
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: R-统一API
+        type: http-request
+        url: https://mining-business-api.onrender.com/api/business-query
+        variables: []
+      height: 159
+      id: '1790586499483'
+      position:
+        x: 1280.6092832354211
+        y: 948.4899476386843
+      positionAbsolute:
+        x: 1280.6092832354211
+        y: 948.4899476386843
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1790586408258'
+          - result
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: qwen/qwen-2.5-72b-instruct
+          provider: langgenius/openrouter/openrouter
+        prompt_template:
+        - id: 5be159ed-72cd-4fec-8ef0-3c8d96e5ae26
+          role: system
+          text: "你是“矿业智询”的风险判断助手。\n\n你的任务是：根据业务数据查询结果和知识库规则，对用户问题进行风险判断与说明。\n\n你必须遵守以下规则：\n\
+            1. 只能依据两个信息源回答：\n   - 业务数据查询结果（API结果）\n   - 知识库检索结果（规则依据）\n2. 不得编造数据库中不存在的事实，不得补充未检索到的政策内容。\n\
+            3. 回答时优先给出结论，再补充判断依据。\n4. 如果问题是在问风险、合规、缺项、到期、逾期等状态，要明确说明：\n   - 当前结论\n\
+            \   - 风险点 / 缺失项\n   - 判断依据\n5. 如果业务数据不足以支持判断，要明确说明“当前数据不足，无法完整判断”，并指出缺什么信息。\n\
+            6. 如果用户问的是某矿山或生产线整体情况，应按以下维度归纳：\n   - 证照\n   - 报告\n   - 齐全性\n   - 当前状态\n\
+            7. 如果用户问的是单个事项，则聚焦单个事项回答，不要展开太多。\n8. 严禁输出思考过程、推理过程、<think>标签、分析草稿。\n9.\
+            \ 只输出最终给用户看的答案。\n\n你会收到以下输入：\n\n【用户问题】\n{{#1789824457863.query#}}\n\n\
+            【业务数据查询结果】\n{{#1790586499483.body#}}\n\n【知识库检索结果】\n{{#context#}}\n\n请输出一段清晰、简洁、面向业务用户的中文回答。"
+        selected: false
+        title: R-风险判断 LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1790586603399'
+      position:
+        x: 2283.9040084089684
+        y: 860.4140974545468
+      positionAbsolute:
+        x: 2283.9040084089684
+        y: 860.4140974545468
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        code: "function main(entity_type, entity_keyword, year, risk_focus, search_query)\
+          \ {\n\n  function cleanString(value) {\n    if (!value) return \"\";\n\n\
+          \    return String(value)\n      .replace(/<think>[\\s\\S]*?<\\/think>/gi,\
+          \ \"\")\n      .replace(/```json/gi, \"\")\n      .replace(/```/g, \"\"\
+          )\n      .trim();\n  }\n\n\n  function normalize(value, defaultValue = \"\
+          \") {\n    const cleaned = cleanString(value);\n\n    if (\n      cleaned\
+          \ === \"null\" ||\n      cleaned === \"undefined\" ||\n      cleaned ===\
+          \ \"None\"\n    ) {\n      return defaultValue;\n    }\n\n    return cleaned\
+          \ || defaultValue;\n  }\n\n\n  return {\n    result: {\n      entity_type:\
+          \ normalize(entity_type, \"unknown\"),\n\n      entity_keyword: normalize(\n\
+          \        entity_keyword,\n        \"unknown\"\n      ),\n\n      year: normalize(year,\
+          \ \"\"),\n\n      risk_focus: normalize(\n        risk_focus,\n        \"\
+          overall\"\n      ),\n\n      search_query: normalize(\n        search_query,\n\
+          \        \"\"\n      )\n    }\n  };\n}"
+        code_language: javascript
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        outputs:
+          result:
+            children: null
+            type: object
+        selected: false
+        title: 'R-格式清洗 '
+        type: code
+        variables:
+        - value_selector:
+          - '1790586117239'
+          - entity_type
+          value_type: string
+          variable: entity_type
+        - value_selector:
+          - '1790586117239'
+          - entity_type
+          value_type: string
+          variable: entity_keyword
+        - value_selector:
+          - '1790586117239'
+          - year
+          value_type: string
+          variable: year
+        - value_selector:
+          - '1790586117239'
+          - risk_focus
+          value_type: string
+          variable: risk_focus
+        - value_selector:
+          - '1790586117239'
+          - search_query
+          value_type: string
+          variable: search_query
+      height: 51
+      id: '17905869726870'
+      position:
+        x: 986
+        y: 581.3567200118811
+      positionAbsolute:
+        x: 986
+        y: 581.3567200118811
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 9aab583b-4e8d-4600-b1db-13eb83a1e0f1
+            numberVarType: constant
+            value: true
+            varType: boolean
+            variable_selector:
+            - '17905978920750'
+            - is_ok
+          logical_operator: and
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        selected: false
+        title: R-条件分支
+        type: if-else
+      height: 123
+      id: '17905978854830'
+      position:
+        x: 1861.2975549578814
+        y: 908.6574422014756
+      positionAbsolute:
+        x: 1861.2975549578814
+        y: 908.6574422014756
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        code: "function main({ status_code, body }) {\n  let msg = \"查询失败，请稍后重试\"\
+          ;\n  try {\n    const b = JSON.parse(body);\n    if (b && b.error && b.error.message)\
+          \ msg = b.error.message;\n  } catch (e) {}\n  return {\n    err_msg: msg,\n\
+          \    is_ok: Number(status_code) === 200\n  };\n}\n"
+        code_language: javascript
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        outputs:
+          err_msg:
+            children: null
+            type: string
+          is_ok:
+            children: null
+            type: boolean
+        selected: false
+        title: 'R-报错解析 '
+        type: code
+        variables:
+        - value_selector:
+          - '1790586499483'
+          - status_code
+          value_type: number
+          variable: status_code
+        - value_selector:
+          - '1790586499483'
+          - body
+          value_type: string
+          variable: body
+      height: 51
+      id: '17905978920750'
+      position:
+        x: 1566.5355070518121
+        y: 935.9134125960572
+      positionAbsolute:
+        x: 1566.5355070518121
+        y: 935.9134125960572
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        outputs:
+        - value_selector:
+          - '17905978920750'
+          - err_msg
+          value_type: string
+          variable: direct_answer2
+        selected: false
+        title: 'R-友好报错 '
+        type: end
+      height: 87
+      id: '17906577553250'
+      position:
+        x: 2283.9040084089684
+        y: 1038.814091649666
+      positionAbsolute:
+        x: 2283.9040084089684
+        y: 1038.814091649666
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        selected: false
+        template: "抱歉，数据服务暂时连接不上，这次没能查到结果。\r\n\r\n可能是网络波动或服务正在重启（免费部署的实例首次访问会有几十秒冷启动）。请稍等片刻后重试。\r\
+          \n\r\n如果连续多次失败，请联系系统管理员确认数据服务是否正常。\r\n"
+        title: B-模板转换
+        type: template-transform
+        variables: []
+      height: 51
+      id: '1790659938758'
+      position:
+        x: 1530.1472445835434
+        y: 648.0270813393971
+      positionAbsolute:
+        x: 1530.1472445835434
+        y: 648.0270813393971
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1790659938758'
+          - output
+          value_type: string
+          variable: output
+        selected: false
+        title: B-异常兜底
+        type: end
+      height: 87
+      id: '1790659942075'
+      position:
+        x: 1861.2975549578814
+        y: 639.9516801690775
+      positionAbsolute:
+        x: 1861.2975549578814
+        y: 639.9516801690775
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        outputs:
+        - value_selector:
+          - '1790533799121'
+          - text
+          value_type: string
+          variable: answer
+        selected: false
+        title: 输出 5
+        type: end
+      height: 87
+      id: '1790665410016'
+      position:
+        x: 2736.7972351021563
+        y: 471.7234014505516
+      positionAbsolute:
+        x: 2736.7972351021563
+        y: 471.7234014505516
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: is
+            id: 0bfcf949-dfa3-47f2-9d85-066bf92dbb1c
+            value: false
+            varType: boolean
+            variable_selector:
+            - '1790575350520'
+            - skip_api
+          logical_operator: and
+        selected: false
+        title: B-条件分支
+        type: if-else
+      height: 123
+      id: '1790668308400'
+      position:
+        x: 1245.3041805823061
+        y: 448.3767148700261
+      positionAbsolute:
+        x: 1245.3041805823061
+        y: 448.3767148700261
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+      zIndex: 0
+    viewport:
+      x: 104.63804991499808
+      y: 95.79147504934727
+      zoom: 0.2986824821991721
+  rag_pipeline_variables: []
