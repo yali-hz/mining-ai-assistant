@@ -33,7 +33,8 @@ test('proxy contract, validation, output branches and safe failures', async () =
     process.env.DIFY_BASE_URL = `http://127.0.0.1:${upstream.address().port}/v1/`;
     assert.equal((await request({ question: ' ' })).status, 400);
     assert.equal((await request({ question: '字'.repeat(1001) })).status, 400);
-    const fields = ['answer', 'answer1', 'answer2', 'text', 'result', 'output',
+    // 与 dify.mjs 的 PREFERRED_FIELDS 保持同一优先级顺序
+    const fields = ['text', 'result', 'output', 'answer1', 'answer2', 'answer',
       'business_answer', 'policy_answer', 'material_answer', 'compliance_answer'];
     for (const field of fields) {
       reply = { data: { status: 'succeeded', outputs: { [field]: '已提交。' } } };
@@ -51,6 +52,26 @@ test('proxy contract, validation, output branches and safe failures', async () =
         status: 200, body: { text: `回答：${fields[index]}` },
       });
     }
+    // 真实 DSL 的 9 个 End 节点字段必须全部能出文（含补全引导/风险/报错/证照）
+    const realEndFields = {
+      answer1: '【知识库】煤系地层……', answer2: '察尔汗一号盐湖矿山的面积是 126.8 平方公里。',
+      answer3: '参数有误，请补充矿山名称后重试。', answer5: '业务数据服务暂时不可用，请稍后再试。',
+      answer8: '系统目前没有风险评级类数据，但可以帮您逐项核查……', answer9: '该报告已逾期未提交。',
+      answer10: '采矿许可证有效期至 2027-05-31，还剩 218 天。',
+      answer11: '这句还缺矿山名称，我没法直接查证照。', answer12: '这句还缺矿山或生产线名称，我没法直接查。',
+    };
+    for (const [field, expected] of Object.entries(realEndFields)) {
+      reply = { data: { status: 'succeeded', outputs: { [field]: expected } } };
+      assert.deepEqual(await request({ question: '问题' }), { status: 200, body: { text: expected } }, `字段 ${field} 应能出文`);
+    }
+    // 新增 End 节点用未见过的新字段名也必须兜底出文
+    reply = { data: { status: 'succeeded', outputs: { some_new_field: '新字段回答' } } };
+    assert.deepEqual(await request({ question: '问题' }), { status: 200, body: { text: '新字段回答' } });
+    // 非字符串（含数组/对象）一律不算有效回答，但要能跳到下一个有效字符串
+    reply = { data: { status: 'succeeded', outputs: { answer11: ['数组不算'], answer12: { a: 1 } } } };
+    assert.equal((await request({ question: '问题' })).status, 502);
+    reply = { data: { status: 'succeeded', outputs: { answer11: ['数组不算'], answer12: '补全引导文案' } } };
+    assert.deepEqual(await request({ question: '问题' }), { status: 200, body: { text: '补全引导文案' } });
     for (const invalid of [null, false, 123, {}, [], '', ' \n\t ']) {
       reply = { data: { status: 'succeeded', outputs: { answer: invalid, answer1: invalid, answer2: '有效回答' } } };
       assert.deepEqual(await request({ question: '问题' }), { status: 200, body: { text: '有效回答' } });

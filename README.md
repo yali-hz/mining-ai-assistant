@@ -1,108 +1,109 @@
 # 矿业智询（Mining AI Assistant）
 
-面向矿业/盐湖监管场景的 AI 智能问答助手。
+面向矿业 / 盐湖监管场景的 AI 查询助手。当前完成 Dify V2 单轮问答验证，下一阶段接入 Pi Agent。
 
-**[打开公网 Demo](https://mining-ai-assistant.onrender.com/)** · 手机或电脑浏览器均可体验
+[公网演示入口](https://mining-ai-assistant.onrender.com/)（当前线上版本及 H5 全链路尚需单独验证）。
 
-先点击 **“我们矿山的储量年报提交了吗？”**，查看查询状态与回答。该 Case 已完成公网端到端验证，演示结果为“已提交。”。当前业务数据均为 **Mock 虚构演示数据**，未接入真实监管系统；提交状态不代表审批通过。
+## 当前进展
 
-## 当前 MVP 能力
-
-| 能力 | 当前实现 |
+| 能力 | 当前状态 |
 | --- | --- |
-| 移动端 H5 问答 | 示例问题、自由输入、聊天展示、加载状态、防重复提交和错误提示 |
-| 业务状态查询 | Dify 调用 Apifox 云端 Mock API，LLM 根据返回数据回答储量年报提交状态 |
-| 政策/监管问答、材料/流程问答 | 已实现问题分类与分支路由，目前仅返回进入分支的提示，尚未提供知识库问答 |
-| 综合判断 | 已有分类分支与占位回复，尚未实现逾期、合规或资料齐全性判断 |
+| 知识问答 | Dify 知识检索与基于材料的回答；无足够依据时明确说明 |
+| 业务查询 | 企业、矿山、生产线的基础信息、关系及指定年度报告状态 |
+| 规则判断 | 报告逾期、逾期补交与采矿许可证临期判断；缺记录时不能认定未提交或存在风险 |
+| H5 页面 | 原生移动端聊天页面、加载与错误提示；代理兼容 answer1～answer30 及其他非空字符串输出 |
+| 多轮与组合任务 | 尚未实现，计划由 Pi 负责追问、上下文和工具组合 |
 
-当前查询固定使用 `mine_001`、`2026`、`储量年报`，尚不能根据自然语言切换矿山、年度或报告类型。每次提问独立运行，不保留多轮对话上下文。
+业务数据为虚构演示数据，知识材料包含虚拟测试规则，不代表真实监管要求；提交不等于审批通过，局部检查不等于整体合规。
 
-## 产品与技术架构
+2026-10-26，维护者反馈代表问题在 Dify 内重新实测通过，决定冻结该阶段的功能范围。这不等于 H5 或已发布 API 完成端到端验收，也不覆盖全部异常边界。
 
-前端采用原生 HTML/CSS/JavaScript，Node.js 同时提供页面与服务端代理。下图按当前代码及 [Workflow DSL](dify/mining-ai-assistant.yml) 绘制：
+## 当前架构
 
-```mermaid
-flowchart TD
-    H[移动端 H5] -->|POST /api/chat| S[Node.js 服务端代理]
-    S -->|POST /workflows/run| I
-    subgraph Dify [Dify Cloud Workflow]
-        I[用户输入 query] --> C[问题分类器]
-        C -->|政策规则| P[LLM：政策占位回复]
-        C -->|材料流程| M[LLM 2：材料占位回复]
-        C -->|业务状态| Q[HTTP 请求：固定查询参数]
-        C -->|综合判断| J[LLM 4：综合判断占位回复]
-        Q --> B[LLM 3：依据 HTTP 响应回答]
-        P --> EP[输出 policy_answer]
-        M --> EM[输出 material_answer]
-        B --> EB[输出 business_answer]
-        J --> EJ[输出 compliance_answer]
-    end
-    Q -->|GET /reports/status| A[Apifox Cloud Mock]
-    A -.->|JSON 响应| Q
-```
+- H5 → Node.js 页面与代理服务 → 已发布 Dify Workflow。
+- Dify 知识分支 → 知识库检索 → 回答。
+- Dify 业务 / 规则分支 → `POST /api/business-query` → CloudBase PostgREST → 事实或规则回答。
+- 页面代理和业务 API 是两个独立服务；Dify 云端需要可访问的业务 API 地址。
 
-各分支输出经服务端代理返回 H5。Dify API Key 仅在服务端读取，不交给浏览器。当前未使用 Flask、数据库或 RAG 检索节点。
+当前每次问题独立执行，采用 blocking 响应，无持久多轮会话。
 
-## Dify Workflow
+## 工作流版本说明
 
-主工作流 [dify/mining-ai-assistant.yml](dify/mining-ai-assistant.yml) 已纳入 Git 版本管理；`dify/workflow-v1.yml` 为早期版本。
+`dify/` 中保留早期导出：`mining-ai-assistant.yml`、`workflow-v1.yml` 及多个 V2 文件。这些历史文件不应直接视为已经实测通过的最终版。
 
-- **用户输入 → 问题分类器**：接收必填 `query`，区分政策规则、材料流程、业务状态和综合判断四类意图。
-- **业务状态分支**：HTTP 节点查询 Mock API；LLM 3 读取响应体，按 `status` 回答，提示词要求不得编造接口未返回的信息；输出 `business_answer`。
-- **其他三个分支**：各自经过 LLM 和输出节点，目前仅验证分类路由，回复分支提示与用户问题。
+最终基线应从 Dify 中测试通过且已发布的应用导出后归档。导出文件不包含知识库文档本体，复现时仍需配置知识库、模型供应商和业务 API。最终基线已归档为 [dify-v2-baseline-2026-10-26.yml](dify/dify-v2-baseline-2026-10-26.yml)，历史文件保留供对照。
 
-代表 Case：**“我们矿山的储量年报提交了吗？” → 业务状态分支 → Mock 返回“已提交” → 页面显示“已提交。”**
-
-复现时在 Dify Cloud 导入主 DSL，配置其 OpenRouter 模型供应商与可访问的 Mock 接口后发布 Workflow，再将应用 API 配置到服务端。DSL 不包含模型或应用密钥。
-
-## Apifox Mock
-
-MVP 使用 Mock 模拟“查询某矿山某年度某类报告提交状态”的业务接口，便于在真实监管接口接入前验证产品交互和完整调用链路。
-
-接口形态：`GET /reports/status`，参数为 `mine_id`、`year`、`report_type`。当前 Workflow 固定查询 `mine_001 / 2026 / 储量年报`，已验证的演示状态为 `已提交`；此处不展开云端 Mock 完整地址。
-
-仓库另有独立的 [本地 Mock API](mock-api/README.md) 与 [示例数据](mock-api/data.json)：储量年报“已提交”、年度资源开发利用报告“未提交”、卤水动态监测年报“已提交”。这些本地记录不表示公网 Workflow 已支持多报告查询；当前公网链路使用 Apifox Cloud Mock。
+知识材料位于 `docs/knowledge-base/sources/`。旧架构文档和接口说明可能落后于实现，请结合当前代码核对。
 
 ## 本地运行
 
-需要 **Node.js 22 或以上**。项目没有 `package.json`，使用 Node.js 内置模块，无需安装依赖或打包。
+需要 Node.js 22+。
 
-1. 在仓库根目录，将 `.env.example` 复制为 `.env`（已有配置时不要覆盖）。
-2. 编辑 `.env`，填入自己的已发布 Dify Workflow 应用配置：
+```sh
+npm ci
+```
+
+首次将 `.env.example` 复制为 `.env`，已有配置不要覆盖。配置仅保存在服务端，不提交密钥。
 
 ```dotenv
 DIFY_BASE_URL=https://api.dify.ai/v1
 DIFY_API_KEY=YOUR_DIFY_APP_API_KEY
 PORT=5174
+BUSINESS_API_PORT=3000
+CLOUDBASE_BASE_URL=https://YOUR_ENV_ID.api.tcloudbasegateway.com/v1/rdb/rest
+CLOUDBASE_TOKEN=YOUR_CLOUDBASE_TOKEN
 ```
 
-`DIFY_BASE_URL` 与 `DIFY_API_KEY` 为必填；Base URL 使用应用 API 页面提供的地址，不包含 `/workflows/run`。`PORT` 可选，不设置时默认为 `5173`，示例配置为 `5174`。系统环境变量优先，修改后需重启。
-
-3. 在仓库根目录启动：
+Dify Base URL 不包含 `/workflows/run`。在两个终端分别启动：
 
 ```sh
-node app/preview.mjs
+npm run preview
 ```
 
-按上述示例配置访问 [本地页面](http://localhost:5174)，点击代表问题验证；停止服务按 Ctrl+C。`.env` 和 `.env.*` 已被 `.gitignore` 忽略，仅保留不含凭据的 `.env.example`。
-
-代理自动检查（模拟 Dify 响应，不代表云端联通验证）：
+H5 默认按示例配置访问 http://localhost:5174 。
 
 ```sh
-node --test app/dify.test.mjs
+npm start
 ```
 
-如需单独体验本地 Mock，可运行 `node mock-api/server.js`；它不是启动 H5 的必要步骤。更多说明见 [应用运行指南](app/README.md)。
+业务 API 按示例配置监听 3000 端口，健康检查为 `/health`。业务端口优先级：`BUSINESS_API_PORT` → `PORT` → `3000`。部署平台提供 PORT 时，不要再设置 BUSINESS_API_PORT。
+
+## 验证
+
+```sh
+npm test
+```
+
+自动测试使用本地模拟上游，不代表 Dify / CloudBase 云端连通。H5 代理测试覆盖多分支输出、参数校验和安全错误提示。业务测试需结合当前接口实现检查结果。
+
+Dify 代表问题：
+
+1. 储量年报什么时候交？
+2. 察尔汗一号盐湖矿山2024年储量年报提交了吗？
+3. 察尔汗一号盐湖矿山2024年储量年报逾期了吗？
+4. 察尔汗一号盐湖矿山的采矿证快到期了吗？
+5. 察尔汗一号盐湖矿山2030年储量年报提交了吗？
+6. 采矿证快到期了吗？
+
+预期：依据实际查询结果回答；无记录不能认定未提交；缺名称应提示补充。逾期补交、无效日期等边界需准备对应数据独立验证。编辑器测试通过后须发布，外部 API 才会使用更新版本。
 
 ## 部署
 
-公网 Demo 已部署至 **Render**：提供 H5 页面及 Node.js 代理，以仓库根目录为工作目录，启动命令为 `node app/preview.mjs`。服务监听 `0.0.0.0`，读取平台的 `PORT`；在 Render 环境变量中配置 `DIFY_BASE_URL` 和 `DIFY_API_KEY`，不要上传本地 `.env`。
+- H5 / 代理：启动 `node app/preview.mjs`，配置 Dify 环境变量。
+- 业务 API：仓库 `render.yaml` 描述独立 Render 服务，安装 `npm ci`，启动 `node server/app.js`，配置 CloudBase 环境变量。
+- 密钥不得放入前端或上传 `.env`。真实数据接入前需补充用户鉴权与数据权限。
 
-**Render → Dify Cloud → Apifox Cloud Mock**：Dify Cloud 运行已发布工作流并调用模型，业务状态分支访问 Apifox 云端演示接口。此前已完成公网代表 Case 验证。
+## Pi Agent 升级方向
 
-## 下一步
+已确定采用：Pi 分别调用业务 API、知识检索和确定性规则工具。Pi 负责多轮追问、任务拆解、工具选择与汇总；Dify 知识库继续复用，规则逐步整理为后端工具。
 
-- 从问题中提取并校验 `report_type`、矿山与年度，替换固定查询参数。
-- 接入多报告查询，汇总提交情况与缺项。
-- 接入政策及办事指南 RAG，为政策、材料问答提供可追溯依据。
-- 结合规则与业务数据实现综合判断。
+完整 Dify Workflow 保留为演示和回归对照，暂停新增复杂分支；影响正确性的错误仍修复。Pi 尚未接入，不将规划描述为已上线能力。
+
+## 目录
+
+- `app/`：H5、页面服务、Dify 代理与测试。
+- `server/`：Express 业务 API 与测试。
+- `data/`：虚构演示数据 CSV。
+- `dify/`：历史工作流导出。
+- `docs/`：接口说明、知识材料及历史设计文档。
+- `mock-api/`：早期独立 Mock，非当前业务查询主链路。

@@ -3,6 +3,37 @@ function json(res, status, value) {
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
   res.end(JSON.stringify(value));
 }
+/**
+ * 归一化 Dify 工作流 outputs 里的回答字段。
+ *
+ * 背景：DSL 里 9 个 End 节点分别写 answer1/2/3/5/8/9/10/11/12，
+ * 如果只认固定几个字段，补全引导（answer11/12）、风险回答（answer9）、
+ * 报错提示（answer3/answer5）、证照回答（answer10）在网页上都显示不出来。
+ *
+ * 规则：
+ * 1. 只有非空字符串算有效回答（数组/对象/数字/null/纯空白都跳过）；
+ * 2. answer/answer1…answer99 与常见语义字段按固定优先级优先取；
+ * 3. 其余任何非空字符串字段兜底——新增 End 节点用的新字段名也不会被漏掉。
+ */
+const PREFERRED_FIELDS = [
+  'text', 'result', 'output',
+  ...Array.from({ length: 30 }, (_, index) => `answer${index + 1}`),
+  'answer',
+  'business_answer', 'risk_answer', 'policy_answer', 'material_answer', 'compliance_answer',
+];
+
+export function pickAnswer(outputs) {
+  const usable = (value) => typeof value === 'string' && value.trim() !== '';
+  for (const name of PREFERRED_FIELDS) {
+    if (usable(outputs[name])) return outputs[name];
+  }
+  for (const [name, value] of Object.entries(outputs)) {
+    if (PREFERRED_FIELDS.includes(name)) continue;
+    if (usable(value)) return value;
+  }
+  return '';
+}
+
 export async function handleChat(req, res) {
   if (req.method !== 'POST') return json(res, 405, { error: '请使用 POST 提交问题。' });
   if (!req.headers['content-type']?.startsWith('application/json')) return json(res, 415, { error: '请求格式不正确。' });
@@ -44,9 +75,7 @@ export async function handleChat(req, res) {
     const result = await upstream.json();
     if (result.data?.status !== 'succeeded') return json(res, 502, { error: 'Dify 工作流未成功完成，请检查 Dify 运行记录后重试。' });
     const outputs = result.data.outputs || {};
-    const text = ['answer', 'answer1', 'answer2', 'text', 'result', 'output',
-      'business_answer', 'policy_answer', 'material_answer', 'compliance_answer']
-      .map(name => outputs[name]).find(value => typeof value === 'string' && value.trim());
+    const text = pickAnswer(outputs);
     if (!text) return json(res, 502, { error: 'Dify 未返回有效回答，请检查工作流输出字段。' });
     return json(res, 200, { text });
   } catch (error) {
