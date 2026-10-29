@@ -14,7 +14,7 @@ export function createAgentWeb({ createRuntime, modelName, now = Date.now, publi
   const sessions = new Map();
   let active = 0;
   app.disable('x-powered-by');
-  app.get('/health', (_req, res) => res.json({ status: 'ok', agent: true }));
+  app.get('/health', (_req, res) => res.json({ status: 'ok', agent: true, ...(process.env.RENDER_GIT_COMMIT ? { revision: process.env.RENDER_GIT_COMMIT } : {}) }));
   if (demoPassword) app.use((req, res, next) => {
     const expected = `Basic ${Buffer.from(`demo:${demoPassword}`).toString('base64')}`;
     if (req.headers.authorization === expected) return next();

@@ -1,10 +1,30 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createModels, fauxProvider, fauxAssistantMessage, fauxToolCall } from '@earendil-works/pi-ai';
-import { createMiningAgent } from './runtime.mjs';
+import { createMiningAgent, isToolInstruction } from './runtime.mjs';
 import { createReportTool } from './report-tool.mjs';
 
 const args = { entity_type: 'mine', entity_keyword: '察尔汗一号盐湖', year: 2024, report_type_name: '储量年报' };
+test('textual tool calls never reach the user or remain in conversation as results', async () => {
+  for (const text of [
+    '!\nfunction!\ncall:{"call":"query_relations","arguments":{"entity_type":"mine","entity_keyword":"察尔汗一号盐湖矿山","target_type":"production_line","query_intent":"count"}}',
+    '```json\n{"name":"query_entity","arguments":{"entity_keyword":"甲矿"}}\n```',
+    '{"tool_calls":[{"function":{"name":"search_knowledge","arguments":"{}"}}]}',
+  ]) {
+    let count = 0;
+    const runtime = setup([fauxAssistantMessage(text)], async () => { count++; throw Error('should not execute'); });
+    const answer = await runtime.ask('有哪些生产线，共几条？');
+    assert.match(answer, /未成功完成/);
+    assert.doesNotMatch(answer, /function|arguments|query_|tool_calls/);
+    assert.equal(runtime.agent.state.messages.at(-1).content[0].text, answer);
+    assert.equal(count, 0);
+  }
+});
+test('ordinary answers and grounded quote payloads are not tool instructions', () => {
+  for (const text of ['查询失败，暂时无法判断。', '共3条生产线。', '{"status":"supported","quotes":[{"source":"规则.md","text":"截止日期"}]}']) {
+    assert.equal(isToolInstruction(text), false);
+  }
+});
 test('model JSON without current retrieval never leaks or becomes trusted citation', async () => {
   const runtime=setup([fauxAssistantMessage('{"status":"supported","quotes":[{"source":"rules.md","text":"未经检索的编造材料清单"}]}')]);
   const answer=await runtime.ask('储量年报最晚什么时候交？请给出原文依据。');

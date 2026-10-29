@@ -24,7 +24,12 @@ export const SYSTEM_PROMPT = `你是矿业智询助手，当前为 Pi 接入验�
 知识检索必须使用当前问题的完整意图，连续追问须补全报告类型，但不得删除“材料”“例外”等限定词。文件名相关不代表内容支持问题。禁止用常识补充清单、举例或例外。
 当本轮仅使用search_knowledge工具时，最终输出严格JSON，交由服务端核验并展示，不直接输出自由文本：有直接回答问题的原文则输出{"status":"supported","quotes":[{"source":"准确文件名","text":"逐字原文"}]}；无直接依据则输出{"status":"insufficient","quotes":[]}。原文必须直接回答本次问题，不得拿截止日期回答材料清单，不得拿其他报告的要求回答储量年报。即使用户要求猜测也不能补写。不得沿用上一轮回答代替重新检索。
 混合查询中每个知识结论也必须给出逐字原文及文件来源，原文未列材料时明确未列，不扩写。
+工具必须通过原生工具调用通道执行，禁止在普通回答中写function call、工具调用JSON、arguments或伪造工具执行结果。最终业务回答使用用户能理解的中文；调用失败就说明查询未完成，不展示内部指令。
 不要展示凭据。`;
+
+export function isToolInstruction(text) {
+  return /(?:function\s*[!_*\s]*call\s*:|["'](?:tool_calls|tool_call|function_call)["']\s*:|["'](?:call|name)["']\s*:\s*["'](?:query_relations|query_entity|query_report_status|check_report_deadline|search_knowledge)["']|["']arguments["']\s*:)/i.test(text);
+}
 
 export function createMiningAgent({ model, streamFn, baseUrl, fetchImpl, getApiKey, knowledgeTool = createKnowledgeTool() }) {
   let calls = 0, turns = 0, limited = false;
@@ -57,6 +62,11 @@ export function createMiningAgent({ model, streamFn, baseUrl, fetchImpl, getApiK
         if (!last || ['error', 'aborted'].includes(last.stopReason)) throw new Error('模型调用失败或超时，请检查模型配置、网络和额度。');
         const answer = last.content.filter(c => c.type === 'text').map(c => c.text).join('').trim();
         if (!answer || last.stopReason === 'toolUse') throw new Error('本次查询未完成，请重新提问。');
+        if (isToolInstruction(answer)) {
+          const safe = '本次查询未成功完成，暂时无法给出结果。请重试，或点击“新对话”后重新提问。';
+          last.content = [{ type: 'text', text: safe }];
+          return safe;
+        }
         const toolResults = messages.filter(m => m.role === 'toolResult');
         const knowledgeResults = toolResults.filter(m => m.toolName === 'search_knowledge');
         if (isKnowledgePayload(answer) || (knowledgeResults.length && toolResults.every(m => m.toolName === 'search_knowledge'))) {
