@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: mining-pi-demo
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: node agent/web.mjs
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+      - key: NODE_ENV
+        value: production
+      - key: PI_MODEL
+        value: deepseek/deepseek-chat
+      - key: PI_KNOWLEDGE_MODE
+        value: dify
+      - key: PI_BUSINESS_MODE
+        value: embedded
+      - key: DEMO_PASSWORD
+        generateValue: true
+      - key: PI_MODEL_API_KEY
+        sync: false
+      - key: DIFY_KNOWLEDGE_BASE_URL
+        value: https://api.dify.ai/v1
+      - key: DIFY_KNOWLEDGE_API_KEY
+        sync: false
+      - key: DIFY_DATASET_ID
+        sync: false
+      - key: CLOUDBASE_BASE_URL
+        sync: false
+      - key: CLOUDBASE_TOKEN
+        sync: false

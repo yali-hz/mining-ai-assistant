@@ -2,13 +2,23 @@
   "name": "mining-ai-assistant",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "scripts": {
     "start": "node server/app.js",
     "dev": "node --watch server/app.js",
     "preview": "node app/preview.mjs",
-    "test": "node --test app/dify.test.mjs server/test/*.test.js",
+    "agent": "node agent/cli.mjs",
+    "agent:web": "node agent/web.mjs",
+    "agent:check": "node agent/check-live.mjs",
+    "test:agent": "node --test agent/*.test.mjs",
+    "test": "node --test app/dify.test.mjs server/test/*.test.js agent/*.test.mjs",
     "test:business": "node --test server/test/*.test.js"
   },
-  "dependencies": { "express": "^5.2.1" }
+  "dependencies": {
+    "@earendil-works/pi-agent-core": "1.4.0",
+    "@earendil-works/pi-ai": "1.4.0",
+    "express": "^5.2.1"
+  }
 }

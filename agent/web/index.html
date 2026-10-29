@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>矿业智询 · Pi Agent</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/chat.mjs"></script>
+</head>
+<body>
+  <main>
+    <header><div><p class="eyebrow">MINING AI ASSISTANT</p><h1>矿业智询 <span>Pi Agent</span></h1></div><button id="reset" type="button">新对话</button></header>
+    <section class="intro"><h2>查信息，核规则，完成组合任务。</h2><p>查询企业、矿山与生产线信息，核对年度报告逾期情况。支持多轮补问和连续追问；数据与规则仅用于课程演示。</p><div class="tags"><span>多轮对话</span><span>业务查询</span><span>规则判断</span><span>工具组合</span></div><p id="model" class="muted">正在连接服务…</p></section>
+    <section class="examples" aria-label="示例问题">
+      <button type="button" data-question="察尔汗一号盐湖矿山2024年储量年报提交了吗？">查询 2024 年储量年报 ↗</button>
+      <button type="button" data-question="察尔汗一号盐湖矿山储量年报提交了吗？">试试让 Agent 补问年度 ↗</button>
+      <button type="button" data-question="那2030年的呢？">接着问：那 2030 年的呢？ ↗</button>
+      <button type="button" data-question="察尔汗一号盐湖矿山面积多少？">查询矿山面积 ↗</button>
+      <button type="button" data-question="察尔汗一号盐湖矿山有哪些生产线？">查询关联生产线 ↗</button>
+      <button type="button" data-question="帮我查察尔汗一号盐湖矿山的面积、生产线，以及2024年储量年报是否逾期，并说明判断依据。">组合任务：信息查询 + 逾期核对 ↗</button>
+    </section>
+    <section id="messages" role="log" aria-live="polite" aria-label="聊天记录"></section>
+    <form id="chat-form"><label class="sr-only" for="question">问题</label><textarea id="question" rows="2" maxlength="1000" placeholder="输入矿山名称和问题，Enter 发送，Shift+Enter 换行"></textarea><button id="send" disabled>发送</button></form>
+    <p class="footer">课程演示 · 回答依据工具结果 · 缺记录不能认定未提交 · 提交不等于审批通过</p>
+  </main>
+</body>
+</html>

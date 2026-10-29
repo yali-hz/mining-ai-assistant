@@ -6,8 +6,27 @@ const send = document.querySelector('#send');
 const messages = document.querySelector('#messages');
 const content = document.querySelector('#content');
 let pending = false;
+if (location.pathname === '/h5') {
+  const reset = document.createElement('button');
+  reset.type = 'button'; reset.textContent = '＋ 新对话'; reset.className = 'new-chat';
+  reset.setAttribute('aria-label', '开始新对话，清除当前会话');
+  document.querySelector('.navigation').append(reset);
+  reset.addEventListener('click', async () => {
+    if (pending) return;
+    pending = true; updateInput();
+    try {
+      const response = await fetch('/api/reset', { method: 'POST', signal: AbortSignal.timeout(5000) });
+      if (!response.ok) throw Error();
+      messages.replaceChildren();
+      content.scrollTop = 0; input.focus();
+    } catch { addMessage('assistant', '新对话未能开始，请稍后重试。'); }
+    finally { pending = false; updateInput(); }
+  });
+}
 
 function updateInput() {
+  const reset = document.querySelector('.new-chat');
+  if (reset) reset.disabled = pending;
   send.disabled = pending || !input.value.trim();
   document.querySelectorAll('[data-question]').forEach(button => { button.disabled = pending; });
   messages.setAttribute('aria-busy', String(pending));
@@ -37,7 +56,7 @@ async function submit(question) {
   addMessage('user', question);
   const reply = addMessage('assistant', '正在查询…', true);
   try {
-    const result = await sendMessage({ question });
+    const result = await sendMessage({ question, onProgress: text => { reply.querySelector('.bubble').textContent = text; } });
     reply.querySelector('.bubble').textContent = result.text;
   } catch (error) {
     reply.querySelector('.bubble').textContent = error.name === 'TimeoutError'

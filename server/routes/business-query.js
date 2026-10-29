@@ -189,6 +189,9 @@ function validate(body) {
   }
 
   p.entity_keyword = text(p.entity_keyword, 'entity_keyword');
+  if (/[*%_,()]/.test(p.entity_keyword)) {
+    fail(400, 'INVALID_PARAMETER', '实体名称不能包含查询通配符或控制符');
+  }
 
   if (p.resource_type === 'entity') {
 
@@ -269,7 +272,7 @@ function createClient(env, fetchImpl, signal) {
     fail(503, 'CLOUDBASE_NOT_CONFIGURED', '请配置CLOUDBASE_BASE_URL和TOKEN');
   }
 
-  return async function read(table, params) {
+  async function readPage(table, params) {
 
     const url = new URL(`${base.href.replace(/\/$/, '')}/${table}`);
 
@@ -281,7 +284,8 @@ function createClient(env, fetchImpl, signal) {
       signal,
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: 'application/json'
+        Accept: 'application/json',
+        Prefer: 'count=exact'
       }
     });
 
@@ -289,7 +293,21 @@ function createClient(env, fetchImpl, signal) {
       fail(502, 'CLOUDBASE_ERROR', 'CloudBase查询失败');
     }
 
-    return await response.json();
+    const rows = await response.json();
+    if (!Array.isArray(rows)) fail(502, 'CLOUDBASE_ERROR', 'CloudBase响应格式错误');
+    return rows;
+  }
+
+  return async function read(table, params) {
+    const rows = [];
+    const key = table === REPORT_TABLE ? 'record_id' : `${table}_id`;
+    // Continue until empty: upstream may cap pages below our requested limit.
+    for (let page = 0; page < 100; page++) {
+      const batch = await readPage(table, { ...params, order: `${key}.asc`, offset: rows.length, limit: 200 });
+      if (!batch.length) return rows;
+      rows.push(...batch);
+    }
+    fail(502, 'QUERY_LIMIT_EXCEEDED', '查询结果过多，请缩小范围');
   };
 }
 
@@ -322,6 +340,10 @@ function createBusinessRouter(env, fetchImpl) {
         fail(404, 'ENTITY_NOT_FOUND', '未找到匹配实体');
       }
 
+      if (entityRows.length > 1) {
+        fail(409, 'AMBIGUOUS_ENTITY', '匹配到多个对象，请提供更完整名称', { total: entityRows.length });
+      }
+
       const row = entityRows[0];
 
       const entity = {
@@ -349,13 +371,17 @@ function createBusinessRouter(env, fetchImpl) {
         } else {
 
           const rows = await read(p.entity_type, {
-            select: p.requested_field,
+            select: p.entity_type === 'production_line' && p.requested_field === 'design_capacity'
+              ? 'design_capacity,capacity_unit' : p.requested_field,
             [nameField]: `eq.${entity.name}`
           });
 
           data = {
             [p.requested_field]: rows[0]?.[p.requested_field] ?? null
           };
+          if (p.entity_type === 'production_line' && p.requested_field === 'design_capacity') {
+            data.unit = rows[0]?.capacity_unit ?? null;
+          }
 
         }
 
@@ -432,6 +458,9 @@ function createBusinessRouter(env, fetchImpl) {
         }
 
         const rec = records[0];
+        if (records.length > 1) {
+          fail(409, 'MULTIPLE_REPORT_RECORDS', '存在多条匹配报告记录，请核对报告类型或数据');
+        }
 
         let isOverdue = rec?.is_overdue ?? null;
 
@@ -465,6 +494,7 @@ function createBusinessRouter(env, fetchImpl) {
           report_type_name: rec ? rec.report_type_name : p.report_type_name,
           requested_year: p.year,
           record_found: !!rec,
+          ...(!rec ? { report_type_code: null } : {}),
           status: rec?.status ?? 'unknown',
           submitted_at: rec?.submitted_at ?? null,
           due_date: rec?.due_date ?? null,
@@ -486,7 +516,8 @@ function createBusinessRouter(env, fetchImpl) {
         success: false,
         error: {
           code: known ? err.code : 'INTERNAL_ERROR',
-          message: known ? err.message : '服务内部错误'
+          message: known ? err.message : '服务内部错误',
+          ...(known && err.details ? { details: err.details } : {})
         }
       });
 
