@@ -1,115 +1,47 @@
 # 矿业智询（Mining AI Assistant）
 
-面向矿业 / 盐湖监管场景的 AI 查询助手。Dify V2 单轮问答已完成阶段验证，Pi Agent 已接通真实模型和报告查询，并提供独立本地聊天页面。
+面向矿业、盐湖监管场景的 AI 演示助手。项目目标是让用户用自然语言查询矿山与企业信息、年度报告状态和报送规则，并在回答中区分**业务数据**、**知识材料**和**无法确认的信息**。
 
-[公网演示入口](https://mining-ai-assistant.onrender.com/)（当前线上版本及 H5 全链路尚需单独验证）。
+**H5 演示地址：** [https://mining-pi-demo.onrender.com/h5](https://mining-pi-demo.onrender.com/h5)。演示页面需要访问口令；Render 免费实例闲置后首次打开可能较慢。
 
-## 当前进展
+## 当前链路
 
-| 能力 | 当前状态 |
-| --- | --- |
-| 知识问答 | Dify 知识检索与基于材料的回答；无足够依据时明确说明 |
-| 业务查询 | 企业、矿山、生产线的基础信息、关系及指定年度报告状态 |
-| 规则判断 | 报告逾期、逾期补交与采矿许可证临期判断；缺记录时不能认定未提交或存在风险 |
-| H5 页面 | 原生移动端聊天页面、加载与错误提示；代理兼容 answer1～answer30 及其他非空字符串输出 |
-| Pi Agent | 独立本地聊天页面与命令行；报告查询和连续追问已完成真实模型联调；页面显示工具调用过程 |
-| 组合任务 | 知识检索与独立规则工具尚未接入 Pi |
+```text
+用户 → H5 页面 → Render 上的 Node.js 服务 → Pi Agent（DeepSeek / OpenRouter）
+                                          ├─ 业务查询与规则工具 → CloudBase 数据接口
+                                          └─ 知识检索工具 → Dify 知识库 API
+```
 
-业务数据为虚构演示数据，知识材料包含虚拟测试规则，不代表真实监管要求；提交不等于审批通过，局部检查不等于整体合规。
+- **Pi Agent** 选择工具、组织多轮对话并汇总结果。当前模型由 `PI_MODEL` 配置，默认是 `deepseek/deepseek-chat`。
+- **CloudBase** 提供企业、矿山、生产线和报告等演示业务数据；报告逾期判断由后端规则工具完成。
+- **Dify** 在当前 Pi 链路中提供知识库检索。Top K、检索方式、rerank 和分数阈值由本服务显式传入，配置见 [Dify 检索说明](docs/dify-retrieval-config.md)。
+- `app/` 与 `dify/` 仍保留早期 H5 / Dify Workflow 实现和导出文件，供对照与回归；上述公网 H5 使用 Pi Agent 链路。
 
-2026-10-26，维护者反馈代表问题在 Dify 内重新实测通过，决定冻结该阶段的功能范围。这不等于 H5 或已发布 API 完成端到端验收，也不覆盖全部异常边界。
-
-## 当前架构
-
-- H5 → Node.js 页面与代理服务 → 已发布 Dify Workflow。
-- Dify 知识分支 → 知识库检索 → 回答。
-- Dify 业务 / 规则分支 → `POST /api/business-query` → CloudBase PostgREST → 事实或规则回答。
-- 页面代理和业务 API 是两个独立服务；Dify 云端需要可访问的业务 API 地址。
-
-当前每次问题独立执行，采用 blocking 响应，无持久多轮会话。
-
-## 工作流版本说明
-
-`dify/` 中保留早期导出：`mining-ai-assistant.yml`、`workflow-v1.yml` 及多个 V2 文件。这些历史文件不应直接视为已经实测通过的最终版。
-
-最终基线应从 Dify 中测试通过且已发布的应用导出后归档。导出文件不包含知识库文档本体，复现时仍需配置知识库、模型供应商和业务 API。最终基线已归档为 [dify-v2-baseline-2026-10-26.yml](dify/dify-v2-baseline-2026-10-26.yml)，历史文件保留供对照。
-
-知识材料位于 `docs/knowledge-base/sources/`。旧架构文档和接口说明可能落后于实现，请结合当前代码核对。
+业务数据和部分知识材料使用虚构演示内容，不代表真实监管结论。**没有查询记录不能认定未提交；已提交也不代表审批通过。**
 
 ## 本地运行
 
-需要 Node.js 22.19+。
+需要 Node.js 22.19+。复制 `.env.example` 为 `.env`，填写模型、Dify 知识库和 CloudBase 的服务端密钥；不要提交 `.env`。
 
 ```sh
 npm ci
+npm run agent:web
 ```
 
-首次将 `.env.example` 复制为 `.env`，已有配置不要覆盖。配置仅保存在服务端，不提交密钥。
+本地 H5 默认位于 [http://127.0.0.1:5180/h5](http://127.0.0.1:5180/h5)。运行 `npm test` 可执行自动测试；测试使用模拟上游，不能代替线上联调。
 
-```dotenv
-DIFY_BASE_URL=https://api.dify.ai/v1
-DIFY_API_KEY=YOUR_DIFY_APP_API_KEY
-PORT=5174
-BUSINESS_API_PORT=3000
-CLOUDBASE_BASE_URL=https://YOUR_ENV_ID.api.tcloudbasegateway.com/v1/rdb/rest
-CLOUDBASE_TOKEN=YOUR_CLOUDBASE_TOKEN
-```
+## 部署与验证
 
-Dify Base URL 不包含 `/workflows/run`。在两个终端分别启动：
+Render Web Service 使用 `deploy/pi-demo` 分支，构建命令为 `npm ci`，启动命令为 `node agent/web.mjs`。在 Render 的 **Environment** 中配置 `.env.example` 所列的必要变量及 `DEMO_PASSWORD`；更新代码后确认最新提交在 **Deploys** 中显示为 Live。
 
-```sh
-npm run preview
-```
+可用 [/health](https://mining-pi-demo.onrender.com/health) 查看服务状态。真实模型、知识库和业务数据的问答结果需要在 H5 中逐题核对；记录模板见 [演示评测表](docs/demo-evaluation.md)。
 
-H5 默认按示例配置访问 http://localhost:5174 。
+## 主要目录
 
-```sh
-npm start
-```
-
-业务 API 按示例配置监听 3000 端口，健康检查为 `/health`。业务端口优先级：`BUSINESS_API_PORT` → `PORT` → `3000`。部署平台提供 PORT 时，不要再设置 BUSINESS_API_PORT。
-
-## 验证
-
-```sh
-npm test
-```
-
-自动测试使用本地模拟上游，不代表 Dify / CloudBase 云端连通。H5 代理测试覆盖多分支输出、参数校验和安全错误提示。业务测试需结合当前接口实现检查结果。
-
-Dify 代表问题：
-
-1. 储量年报什么时候交？
-2. 察尔汗一号盐湖矿山2024年储量年报提交了吗？
-3. 察尔汗一号盐湖矿山2024年储量年报逾期了吗？
-4. 察尔汗一号盐湖矿山的采矿证快到期了吗？
-5. 察尔汗一号盐湖矿山2030年储量年报提交了吗？
-6. 采矿证快到期了吗？
-
-预期：依据实际查询结果回答；无记录不能认定未提交；缺名称应提示补充。逾期补交、无效日期等边界需准备对应数据独立验证。编辑器测试通过后须发布，外部 API 才会使用更新版本。
-
-## 部署
-
-- H5 / 代理：启动 `node app/preview.mjs`，配置 Dify 环境变量。
-- 业务 API：仓库 `render.yaml` 描述独立 Render 服务，安装 `npm ci`，启动 `node server/app.js`，配置 CloudBase 环境变量。
-- 密钥不得放入前端或上传 `.env`。真实数据接入前需补充用户鉴权与数据权限。
-
-## Pi Agent 升级方向
-
-已确定采用：Pi 分别调用业务 API、知识检索和确定性规则工具。Pi 负责多轮追问、任务拆解、工具选择与汇总；Dify 知识库继续复用，规则逐步整理为后端工具。
-
-完整 Dify Workflow 保留为演示和回归对照，暂停新增复杂分支；影响正确性的错误仍修复。
-
-Pi 第一阶段提供 `npm run agent:web`，启动独立本地聊天页面（默认 http://127.0.0.1:5180 ），也保留 `npm run agent` 命令行入口。本机业务服务自动启动，报告查询与连续追问已完成真实模型联调。启动配置和验收步骤见 [Pi 接入说明](docs/pi-agent.md)。原 H5 继续连接 Dify；Pi 知识检索与独立规则工具后续接入，Pi 尚未部署为公网服务。
-
-接入期间修复业务 API 的分页遗漏、重名对象和重复报告记录处理；歧义查询返回明确错误。Dify 云端若调用已部署的旧业务 API，需要另行部署后端才能使用这些修复。
-
-## 目录
-
-- `app/`：H5、页面服务、Dify 代理与测试。
-- `agent/`：Pi 运行时、报告工具、命令行入口与模拟模型测试。
-- `server/`：Express 业务 API 与测试。
-- `data/`：虚构演示数据 CSV。
-- `dify/`：历史工作流导出。
-- `docs/`：接口说明、知识材料及历史设计文档。
-- `mock-api/`：早期独立 Mock，非当前业务查询主链路。
+| 目录 | 内容 |
+| --- | --- |
+| `agent/` | Pi Agent、Dify 检索、业务与规则工具、H5 服务 |
+| `server/` | 业务 API 与 CloudBase 查询 |
+| `app/` | H5 页面与早期 Dify Workflow 代理 |
+| `docs/` | 配置说明、知识材料、评测表 |
+| `dify/` | 历史 Workflow 导出 |
